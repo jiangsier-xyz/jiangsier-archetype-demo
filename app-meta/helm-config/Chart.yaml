@@ -1,0 +1,30 @@
+annotations:
+  licenses: MIT
+  group: xyz.jiangsier
+apiVersion: v2
+appVersion: 1.0.0-SNAPSHOT
+dependencies:
+- condition: bitnami.mysql.enabled
+  name: mysql
+  repository: https://charts.bitnami.com/bitnami
+  tags:
+  - mysql
+  - sql
+  - database
+  version: 9.x.x
+- condition: bitnami.redis.enabled
+  name: redis-cluster
+  repository: https://charts.bitnami.com/bitnami
+  tags:
+    - redis
+    - keyvalue
+    - database
+  version: 8.x.x
+description: A Helm chart for jiangsier-archetype-demo
+maintainers:
+- email: leiyi.jp@gmail.com
+  name: Kelvin Jiang
+  url: https://github.com/jiangsier-xyz
+name: jiangsier-archetype-demo
+type: application
+version: 0.1.1

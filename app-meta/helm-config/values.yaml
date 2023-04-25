@@ -1,0 +1,77 @@
+global:
+  storageClass: ''
+  redis:
+    password: ''
+auth:
+  oauth2:
+    aliyun:
+      enable: true
+      authorizationGrantType: authorization_code
+      clientAuthenticationMethod: basic
+      clientName: Aliyun
+      scope: openid,aliuid,profile
+      clientId: ''
+      clientSecret: ''
+    google:
+      enable: true
+      scope: openid,profile,email
+      clientId: ''
+      clientSecret: ''
+autoscaling:
+  enabled: false
+bitnami:
+  mysql:
+    enabled: true
+  redis:
+    enabled: true
+cert:
+  manager:
+    namespace: cert-manager
+    version: v1.11.0
+  issuer:
+    enabled: false
+  certificate:
+    enabled: false
+  email: ''
+debug:
+  jpda:
+    enabled: false
+    port: 5005
+image:
+  pullPolicy: Always
+  repository: jiangsier/jiangsier-archetype-demo
+  tag: '1.0.0-SNAPSHOT'
+ingress:
+  enabled: false
+  className: nginx
+  hosts:
+    - host: jiangsier.xyz
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    enabled: false
+mysql:
+  url: 'jdbc:mysql://jiangsier-archetype-demo-mysql:3306/accounts?useUnicode=true&characterEncoding=utf-8'
+  auth:
+    database: accounts
+    password: ''
+    rootPassword: ''
+    username: ''
+redis:
+  url: 'redis://jiangsier-archetype-demo-redis-cluster:6379'
+replicaCount: 2
+resources:
+  limits: {}
+  requests: {}
+securityContext:
+  runAsUser: 2023
+  runAsGroup: 2023
+service:
+  ports:
+    http: 80
+  type: ClusterIP
+serviceAccount:
+  create: true
+systemAccount: admin
+spring: {}
