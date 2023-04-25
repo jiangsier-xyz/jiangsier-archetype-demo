@@ -45,7 +45,7 @@ You can also use the tools script [port-forward.sh](https://github.com/jiangsier
 
 ## What jiangsier-archetype-demo has
 ### Distributed Cache
-jiangsier-archetype-demo implements Spring Cache based on Redisson, refer to [RedissonCacheConfig.java](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/jiangsier-archetype-demo-start/src/main/java/config/RedissonCacheConfig.java). In addition, [FullNameKeyGenerator.java](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/jiangsier-archetype-demo-service/src/main/java/cache/FullNameKeyGenerator.java) is customized to generate the cache key by class name, method name and parameter value, so as to support the use of the preset cache in the whole system. The preset cache includes the following:
+jiangsier-archetype-demo implements Spring Cache based on Redisson, refer to [RedissonCacheConfig.java](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/jiangsier-archetype-demo-start/src/main/java/xyz/jiangsier/config/RedissonCacheConfig.java). In addition, [FullNameKeyGenerator.java](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/jiangsier-archetype-demo-service/src/main/java/xyz/jiangsier/cache/FullNameKeyGenerator.java) is customized to generate the cache key by class name, method name and parameter value, so as to support the use of the preset cache in the whole system. The preset cache includes the following:
 - `@ShortPeriodCache`: short-term cache, expires in 2 seconds, suitable for high-frequency access, imprecise data.
 - `@MiddlePeriodCache`: Medium-term cache, expired in 5 minutes, suitable for most scenarios that do not require high real-time results.
 - `@LongPeriodCache`: long-term cache, 1-hour expiration, suitable for basically unchanged information, such as authentication tokens, binding relationships of users on different platforms, etc.
@@ -55,7 +55,7 @@ These annotations support keyBy parameters to generate cache keys themselves. ke
 The cache configuration is in [cache-config.yml](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/jiangsier-archetype-demo-start/src/main/resources/cache-config.yml), these caches can be passed through the corresponding `@XxxPeriodCacheEvict` annotation to clear, you can also use regular cache annotations to clear (you may need to use their names "shortPeriod", "middlePeriod", "longPeriod").
 
 ### Distributed Session
-jiangsier-archetype-demo implements Spring Session based on Redisson, and sets the Session expiration time to one hour, refer to [RedissonSessionConfig.java](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/jiangsier-archetype-demo-start/src/main/java/config/RedissonCacheConfig.java). As long as a server in the cluster has a Session set, the entire cluster will know.
+jiangsier-archetype-demo implements Spring Session based on Redisson, and sets the Session expiration time to one hour, refer to [RedissonSessionConfig.java](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/jiangsier-archetype-demo-start/src/main/java/xyz/jiangsier/config/RedissonCacheConfig.java). As long as a server in the cluster has a Session set, the entire cluster will know.
 
 Note that the implementation of RedissonConnectionFactory is related to the version of spring-session-data-redis. The second-party package currently used is redisson-spring-data-27 (because spring-session-data-redis uses 2.7.0). For specific correspondence, see [GitHub](https://github.com/redisson/redisson/tree/master/redisson-spring-data#usage).
 
@@ -76,7 +76,7 @@ Almost all systems need to build a user system. jiangsier-archetype-demo has mad
 Portal authentication refers to relying on the user name and password passed in from a login page to match the user table in the database to complete the authentication. jiangsier-archetype-demo does not modify the default settings of spring-security, the login page accesses "/login" via GET, and the path of login processing accesses "/login" via POST. Typically, these pages should be customized.
 
 #### OAuth2 Authentication
-The OAuth2 authentication process of most websites is designed with additional request parameters. For example, Google Cloud OAuth2 authorization parameters refer to [here](https://developers.google.com/identity/protocols/oauth2/web-server#creatingclient). In order to properly set these parameters, this system designs [OAuth2AuthorizationRequestCustomizer.java](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/jiangsier-archetype-demo-start/src/main/java/auth/customizer/OAuth2AuthorizationRequestCustomizer.java) to customize the request content before the actual jump. Since the default OAuth2AuthorizationRequestResolver implementation of the Spring Security framework only supports setting a Customizer bean, considering scalability (supporting OAuth2 authentication for several websites), this class is not directly implemented according to Google's protocol, but according to the name of the OAuth2 authentication service provider to dynamically find the bean object that can handle the request. Protocol extension for Google, implemented in [GoogleOAuth2AuthorizationRequestCustomizer.java](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/jiangsier-archetype-demo-start/src/main/java/auth/customizer/GoogleOAuth2AuthorizationRequestCustomizer.java).
+The OAuth2 authentication process of most websites is designed with additional request parameters. For example, Google Cloud OAuth2 authorization parameters refer to [here](https://developers.google.com/identity/protocols/oauth2/web-server#creatingclient). In order to properly set these parameters, this system designs [OAuth2AuthorizationRequestCustomizer.java](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/jiangsier-archetype-demo-start/src/main/java/xyz/jiangsier/auth/customizer/OAuth2AuthorizationRequestCustomizer.java) to customize the request content before the actual jump. Since the default OAuth2AuthorizationRequestResolver implementation of the Spring Security framework only supports setting a Customizer bean, considering scalability (supporting OAuth2 authentication for several websites), this class is not directly implemented according to Google's protocol, but according to the name of the OAuth2 authentication service provider to dynamically find the bean object that can handle the request. Protocol extension for Google, implemented in [GoogleOAuth2AuthorizationRequestCustomizer.java](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/jiangsier-archetype-demo-start/src/main/java/xyz/jiangsier/auth/customizer/GoogleOAuth2AuthorizationRequestCustomizer.java).
 
 In addition, jiangsier-archetype-demo also supports Alibaba Cloud's OAuth2 authentication.
 
@@ -93,7 +93,7 @@ jiangsier-archetype-demo supports the APIs under specified path (default "/api/\
 - Get the token from the request header, the default key name is "X-API-TOKEN", which is configurable.
 Priority is obtained from the parameters. If multiple \_token parameters are passed in, the first valid token shall prevail. Multiple tokens can also be passed in the request header, separated by "," and the first valid token from the left shall prevail.
 
-Logged-in users can view, create, delete, and disable tokens through the "/token/\*\*" series of APIs, see [AuthController.java](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/jiangsier-archetype-demo-start/src/main/java/controller/AuthController.java). The validity period is specified in seconds when the token is created. Defaults to 1 day if not specified. Each user can create up to 5 tokens.
+Logged-in users can view, create, delete, and disable tokens through the "/token/\*\*" series of APIs, see [AuthController.java](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/jiangsier-archetype-demo-start/src/main/java/xyz/jiangsier/controller/AuthController.java). The validity period is specified in seconds when the token is created. Defaults to 1 day if not specified. Each user can create up to 5 tokens.
 
 In the design of database tables, tokens can support policy/authority scope, but the current implementation only supports "full scope", which means that holding a valid token can have all the interface permissions of the corresponding user.
 
@@ -102,7 +102,7 @@ jiangsier-archetype-demo supports the [OpenAPI Specification](https://swagger.io
 
 ### Performance Tracing
 #### Bean Tracing
-You can add `@Trace` annotation to the method of bean implementation class to print performance log, refer to [TraceAspect.java](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/jiangsier-archetype-demo-start/src/main/java/interceptor/TraceAspect.java), the format is as follows:
+You can add `@Trace` annotation to the method of bean implementation class to print performance log, refer to [TraceAspect.java](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/jiangsier-archetype-demo-start/src/main/java/xyz/jiangsier/interceptor/TraceAspect.java), the format is as follows:
 ```
 traceId|userId|className::methodName|status(S/F/B)|elapseTime(ms)|args|return|errorMessage|extInfo
 ```
@@ -130,7 +130,7 @@ ac11000216560387254571001d0093|-|c.a.t.e.c.c.TestComponent::login|S|19|Alice,*|t
 ```
 
 #### HTTP Tracing
-All HTTP API calls are uniformly traced, and the related implementation is in [TraceInterceptor.java](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/jiangsier-archetype-demo-start/src/main/java/interceptor/TraceInterceptor.java).
+All HTTP API calls are uniformly traced, and the related implementation is in [TraceInterceptor.java](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/jiangsier-archetype-demo-start/src/main/java/xyz/jiangsier/interceptor/TraceInterceptor.java).
 
 ## What jiangsier-archetype-demo depends on
 As a cloud-native application, the services that jiangsier-archetype-demo depends on are all pulled from the helm repository and deployed to your cluster without requiring you to purchase separate cloud services.
@@ -185,6 +185,6 @@ target | the currently called object | #target
 targetClass | The type of the currently called object | #targetClass<br/>Access the Class object of the current instance
 args | array of current method arguments | #args[0]
 
-If you need to expand more information, you can modify [SpELUtils.java](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/jiangsier-archetype-demo-common/src/main/java/util/SpELUtils.java).
+If you need to expand more information, you can modify [SpELUtils.java](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/jiangsier-archetype-demo-common/src/main/java/xyz/jiangsier/util/SpELUtils.java).
 
 For more powerful capabilities of SpEL, please refer to its [documentation](https://www.tutorialspoint.com/spring_expression_language/index.htm).
