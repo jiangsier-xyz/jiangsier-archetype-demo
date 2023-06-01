@@ -14,7 +14,7 @@ auth:
       clientSecret: ''
     google:
       enable: true
-      scope: openid,profile,email
+      scope: openid
       clientId: ''
       clientSecret: ''
 autoscaling:

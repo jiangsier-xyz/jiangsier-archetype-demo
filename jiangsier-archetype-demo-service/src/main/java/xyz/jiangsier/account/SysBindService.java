@@ -13,4 +13,5 @@ public interface SysBindService {
     boolean unbind(User user, String platform);
     boolean isBound(User user, String platform);
     String getRefreshToken(User user, String platform);
+    String getUserIdByPlatformAndSub(String platform, String sub);
 }

@@ -45,6 +45,9 @@ public class SecurityConfig {
     @Value("${auth.role.publicUri:#{null}}")
     private String[] publicUri;
 
+    @Value("${auth.login.uri}")
+    private String loginUri;
+
     @Value("${auth.login.oauth2.successUri}")
     private String oauth2LoginSuccessUri;
 
@@ -101,7 +104,9 @@ public class SecurityConfig {
         });
 
         http.formLogin(portal ->
-                portal.defaultSuccessUrl(portalLoginSuccessUri)
+                portal.loginPage(loginUri)
+                        .permitAll()
+                        .defaultSuccessUrl(portalLoginSuccessUri)
                         .failureUrl(portalLoginFailureUri)
         );
 
@@ -120,7 +125,9 @@ public class SecurityConfig {
         oAuth2FailureHandler.setDefaultFailureUrl(oauth2LoginFailureUri);
 
         http.oauth2Login(oauth2 ->
-                oauth2.authorizationEndpoint(endpoint ->
+                oauth2.loginPage(loginUri)
+                        .permitAll()
+                        .authorizationEndpoint(endpoint ->
                                 endpoint.authorizationRequestResolver(oAuth2RequestResolver))
                         .successHandler(oAuth2SuccessHandler)
                         .failureHandler(oAuth2FailureHandler)
