@@ -166,7 +166,9 @@ public class SysUserDetailsManager implements UserDetailsManager {
         String username = oAuth2User.getName();
         if ("aliyun".equalsIgnoreCase(platform)) {
             String uid = oAuth2User.getAttribute("uid");
-            username = StringUtils.isBlank(uid) ? oAuth2User.getName() : uid;
+            if (StringUtils.isNotBlank(uid)) {
+                username = uid;
+            }
         }
 
         return username + "@" + platform;
@@ -198,7 +200,9 @@ public class SysUserDetailsManager implements UserDetailsManager {
             if (StringUtils.isBlank(name)) {
                 name = oAuth2User.getAttribute(StandardClaimNames.NAME);
             }
-            nickname = StringUtils.isBlank(name) ? nickname : name;
+            if (StringUtils.isNotBlank(name)) {
+                nickname = name;
+            }
         }
         return nickname;
     }
