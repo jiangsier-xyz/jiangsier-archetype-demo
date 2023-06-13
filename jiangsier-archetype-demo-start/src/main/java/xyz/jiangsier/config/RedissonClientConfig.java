@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @SuppressWarnings("unused")
 public class RedissonClientConfig {
+    @Value("${redis.mode:cluster}")
+    private String mode;
     @Value("${redis.datasource.url}")
     private String nodeAddress;
     @Value("${redis.datasource.password}")
@@ -21,10 +23,17 @@ public class RedissonClientConfig {
     public RedissonClient redissonClient() {
         Config config = new Config();
 
-        config.useClusterServers()
-                .addNodeAddress(nodeAddress)
-                .setPassword(password)
-                .setTimeout(timeout);
+        if ("single".equalsIgnoreCase(mode)) {
+            config.useSingleServer()
+                    .setAddress(nodeAddress)
+                    .setPassword(password)
+                    .setTimeout(timeout);
+        } else {
+            config.useClusterServers()
+                    .addNodeAddress(nodeAddress)
+                    .setPassword(password)
+                    .setTimeout(timeout);
+        }
         return Redisson.create(config);
     }
 }
