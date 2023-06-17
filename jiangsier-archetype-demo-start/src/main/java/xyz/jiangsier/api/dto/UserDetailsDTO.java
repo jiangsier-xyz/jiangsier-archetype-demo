@@ -1,13 +1,13 @@
-package xyz.jiangsier.api.response;
+package xyz.jiangsier.api.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.util.Date;
 
-@Schema(description = "Account details.")
+@Schema(description = "User details.")
 @Data
-public class AccountDetailsInfoResponse extends TraceableResponse {
+public class UserDetailsDTO extends TraceableDTO {
     private String username;
     private String nickname;
     private String givenName;

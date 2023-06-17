@@ -20,12 +20,12 @@
             <property name="nullCatalogMeansCurrent" value="true" />
         </jdbcConnection>
 
-        <javaModelGenerator targetPackage="xyz.jiangsier.archetype.model"
+        <javaModelGenerator targetPackage="xyz.jiangsier.model"
                             targetProject="src/main/java">
             <property name="trimStrings" value="true" />
         </javaModelGenerator>
 
-        <javaClientGenerator targetPackage="xyz.jiangsier.archetype.mapper" targetProject="src/main/java"/>
+        <javaClientGenerator targetPackage="xyz.jiangsier.mapper" targetProject="src/main/java"/>
 
         <table tableName="user">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>

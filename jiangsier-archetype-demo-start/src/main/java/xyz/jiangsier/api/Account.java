@@ -1,9 +1,10 @@
 package xyz.jiangsier.api;
 
 import xyz.jiangsier.account.SysUserService;
-import xyz.jiangsier.api.response.AccountBasicInfoResponse;
-import xyz.jiangsier.api.response.AccountDetailsInfoResponse;
+import xyz.jiangsier.api.dto.UserBasicInfoDTO;
+import xyz.jiangsier.api.dto.UserDetailsDTO;
 import xyz.jiangsier.api.util.AuthUtils;
+import xyz.jiangsier.api.util.CommonUtils;
 import xyz.jiangsier.model.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -18,33 +19,33 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.constraints.NotBlank;
 
-@Tag(name = "account")
 @Service
-@Validated
-@SuppressWarnings("unused")
+@Tag(name = "account")
 @RequestMapping("/api/account")
 @ResponseBody
+@Validated
+@SuppressWarnings("unused")
 public class Account {
     @Autowired
     private SysUserService userService;
 
     @Operation(
-            summary = "Get account basic information.",
-            description = "Return the basic information of the account, including: username, nickname, picture/avatar link."
+            summary = "Get basic user information.",
+            description = "Return the basic user information of the account, including: username, nickname, picture/avatar link."
     )
     @GetMapping("/basic/{username}")
-    private AccountBasicInfoResponse basic(
+    public UserBasicInfoDTO basic(
             @Schema(description = "Username") @PathVariable("username") @NotBlank String username) {
         User user = userService.loadUserByUsername(username);
-        return AuthUtils.toResponse(user, AccountBasicInfoResponse.class);
+        return CommonUtils.convert(user, UserBasicInfoDTO.class);
     }
 
     @Operation(
-            summary = "Get current account details.",
-            description = "Return the current account details, fields refer to OpenID Connect (OIDC) [standard claims](https://openid.net/specs/openid-connect-core-1_0.html#Claims)。")
+            summary = "Get current user details.",
+            description = "Return the current user details of the account, fields refer to OpenID Connect (OIDC) [standard claims](https://openid.net/specs/openid-connect-core-1_0.html#Claims)。")
     @GetMapping("/details")
-    private AccountDetailsInfoResponse details() {
+    public UserDetailsDTO details() {
         User user = AuthUtils.currentUser();
-        return AuthUtils.toResponse(user, AccountDetailsInfoResponse.class);
+        return CommonUtils.convert(user, UserDetailsDTO.class);
     }
 }
