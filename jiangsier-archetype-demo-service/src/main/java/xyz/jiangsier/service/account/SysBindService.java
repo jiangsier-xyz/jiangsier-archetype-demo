@@ -1,4 +1,4 @@
-package xyz.jiangsier.account;
+package xyz.jiangsier.service.account;
 
 import xyz.jiangsier.model.User;
 

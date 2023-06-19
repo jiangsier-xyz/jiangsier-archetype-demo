@@ -1,12 +1,11 @@
-package xyz.jiangsier.account.impl;
+package xyz.jiangsier.service.account.impl;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import xyz.jiangsier.mapper.BindingDynamicSqlSupport;
 import xyz.jiangsier.mapper.BindingMapper;
-import xyz.jiangsier.account.SysBindService;
+import xyz.jiangsier.service.account.SysBindService;
 import xyz.jiangsier.model.Binding;
 import xyz.jiangsier.model.User;
 

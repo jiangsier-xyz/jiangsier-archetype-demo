@@ -1,4 +1,4 @@
-package xyz.jiangsier.account;
+package xyz.jiangsier.service.account;
 
 import org.springframework.lang.NonNull;
 import xyz.jiangsier.model.User;

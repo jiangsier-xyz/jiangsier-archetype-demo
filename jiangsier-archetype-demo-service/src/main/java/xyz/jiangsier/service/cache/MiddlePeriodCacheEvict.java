@@ -1,4 +1,4 @@
-package xyz.jiangsier.cache;
+package xyz.jiangsier.service.cache;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.core.annotation.AliasFor;
@@ -9,9 +9,9 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-@CacheEvict(cacheNames = "shortPeriod")
+@CacheEvict(cacheNames = "middlePeriod")
 @SuppressWarnings("unused")
-public @interface ShortPeriodCacheEvict {
+public @interface MiddlePeriodCacheEvict {
     @AliasFor("keyBy")
     String key() default "";
 

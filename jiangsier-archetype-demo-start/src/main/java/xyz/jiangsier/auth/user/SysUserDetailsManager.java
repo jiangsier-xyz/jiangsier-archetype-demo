@@ -17,9 +17,9 @@ import org.springframework.security.oauth2.core.oidc.IdTokenClaimNames;
 import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.provisioning.UserDetailsManager;
-import xyz.jiangsier.account.SysAuthorityService;
-import xyz.jiangsier.account.SysBindService;
-import xyz.jiangsier.account.SysUserService;
+import xyz.jiangsier.service.account.SysAuthorityService;
+import xyz.jiangsier.service.account.SysBindService;
+import xyz.jiangsier.service.account.SysUserService;
 import xyz.jiangsier.model.User;
 
 import java.net.URL;

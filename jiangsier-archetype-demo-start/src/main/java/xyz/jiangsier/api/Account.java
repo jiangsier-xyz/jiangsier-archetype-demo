@@ -1,6 +1,6 @@
 package xyz.jiangsier.api;
 
-import xyz.jiangsier.account.SysUserService;
+import xyz.jiangsier.service.account.SysUserService;
 import xyz.jiangsier.api.dto.UserBasicInfoDTO;
 import xyz.jiangsier.api.dto.UserDetailsDTO;
 import xyz.jiangsier.api.util.AuthUtils;

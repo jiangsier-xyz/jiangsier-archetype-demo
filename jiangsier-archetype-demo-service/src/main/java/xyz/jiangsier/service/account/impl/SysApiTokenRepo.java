@@ -1,9 +1,9 @@
-package xyz.jiangsier.account.impl;
+package xyz.jiangsier.service.account.impl;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import xyz.jiangsier.cache.LongPeriodCache;
+import xyz.jiangsier.service.cache.LongPeriodCache;
 import xyz.jiangsier.mapper.ApiTokenDynamicSqlSupport;
 import xyz.jiangsier.mapper.ApiTokenMapper;
 import xyz.jiangsier.mapper.UserDynamicSqlSupport;

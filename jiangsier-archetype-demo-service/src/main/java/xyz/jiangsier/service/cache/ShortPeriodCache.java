@@ -1,4 +1,4 @@
-package xyz.jiangsier.cache;
+package xyz.jiangsier.service.cache;
 
 import org.springframework.cache.annotation.Cacheable;
 
@@ -8,8 +8,8 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-@Cacheable(cacheNames = "middlePeriod", keyGenerator="fullNameKeyGenerator")
+@Cacheable(cacheNames = "shortPeriod", keyGenerator="fullNameKeyGenerator")
 @SuppressWarnings("unused")
-public @interface MiddlePeriodCache {
+public @interface ShortPeriodCache {
     String keyBy() default "";
 }

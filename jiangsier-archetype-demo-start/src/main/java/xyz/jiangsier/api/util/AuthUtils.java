@@ -1,6 +1,6 @@
 package xyz.jiangsier.api.util;
 
-import xyz.jiangsier.account.SysUserService;
+import xyz.jiangsier.service.account.SysUserService;
 import xyz.jiangsier.model.User;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

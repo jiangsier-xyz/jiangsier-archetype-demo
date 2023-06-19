@@ -1,4 +1,4 @@
-package xyz.jiangsier.account;
+package xyz.jiangsier.service.account;
 
 import org.apache.commons.lang3.StringUtils;
 

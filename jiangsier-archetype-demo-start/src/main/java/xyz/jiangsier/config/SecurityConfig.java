@@ -23,9 +23,9 @@ import xyz.jiangsier.auth.handler.OAuth2AuthenticationFailureHandler;
 import xyz.jiangsier.auth.handler.OAuth2AuthenticationSuccessHandler;
 import xyz.jiangsier.auth.provider.ApiTokenAuthenticationProvider;
 import xyz.jiangsier.auth.user.SysUserDetailsManager;
-import xyz.jiangsier.account.SysAuthorityService;
-import xyz.jiangsier.account.SysBindService;
-import xyz.jiangsier.account.SysUserService;
+import xyz.jiangsier.service.account.SysAuthorityService;
+import xyz.jiangsier.service.account.SysBindService;
+import xyz.jiangsier.service.account.SysUserService;
 import xyz.jiangsier.util.AuthorityUtils;
 
 import java.util.Arrays;

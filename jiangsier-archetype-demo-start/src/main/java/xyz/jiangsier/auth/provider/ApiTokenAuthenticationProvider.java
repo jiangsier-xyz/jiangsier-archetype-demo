@@ -13,8 +13,8 @@ import org.springframework.security.web.authentication.AuthenticationConverter;
 import org.springframework.stereotype.Component;
 import xyz.jiangsier.auth.authentication.ApiTokenAuthenticationToken;
 import xyz.jiangsier.auth.user.SysUserDetails;
-import xyz.jiangsier.account.SysApiTokenService;
-import xyz.jiangsier.account.SysAuthorityService;
+import xyz.jiangsier.service.account.SysApiTokenService;
+import xyz.jiangsier.service.account.SysAuthorityService;
 import xyz.jiangsier.model.User;
 
 import javax.servlet.http.HttpServletRequest;

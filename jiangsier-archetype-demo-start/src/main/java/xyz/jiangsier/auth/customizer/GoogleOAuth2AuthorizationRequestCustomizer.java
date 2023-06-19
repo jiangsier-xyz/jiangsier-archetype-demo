@@ -6,7 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.stereotype.Component;
 import xyz.jiangsier.auth.user.SysUserDetails;
-import xyz.jiangsier.account.SysBindService;
+import xyz.jiangsier.service.account.SysBindService;
 
 import java.util.HashMap;
 import java.util.Map;

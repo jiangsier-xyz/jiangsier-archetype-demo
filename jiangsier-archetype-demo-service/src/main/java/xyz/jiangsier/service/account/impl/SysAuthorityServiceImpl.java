@@ -1,4 +1,4 @@
-package xyz.jiangsier.account.impl;
+package xyz.jiangsier.service.account.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import xyz.jiangsier.mapper.AuthorityDynamicSqlSupport;
 import xyz.jiangsier.mapper.AuthorityMapper;
-import xyz.jiangsier.account.SysAuthorityService;
+import xyz.jiangsier.service.account.SysAuthorityService;
 import xyz.jiangsier.model.Authority;
 import xyz.jiangsier.model.User;
 import xyz.jiangsier.util.AuthorityUtils;
