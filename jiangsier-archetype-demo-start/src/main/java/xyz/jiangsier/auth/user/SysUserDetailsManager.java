@@ -30,6 +30,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@SuppressWarnings({"unused", "UnusedReturnValue"})
 public class SysUserDetailsManager implements UserDetailsManager {
     private static final Logger logger = LoggerFactory.getLogger(SysUserDetailsManager.class);
 
