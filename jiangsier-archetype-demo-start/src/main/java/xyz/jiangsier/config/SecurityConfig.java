@@ -18,11 +18,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import xyz.jiangsier.auth.customizer.OAuth2AuthorizationRequestCustomizer;
-import xyz.jiangsier.auth.handler.OAuth2AuthenticationFailureHandler;
-import xyz.jiangsier.auth.handler.OAuth2AuthenticationSuccessHandler;
-import xyz.jiangsier.auth.provider.ApiTokenAuthenticationProvider;
-import xyz.jiangsier.auth.user.SysUserDetailsManager;
+import xyz.jiangsier.access.auth.customizer.OAuth2AuthorizationRequestCustomizer;
+import xyz.jiangsier.access.auth.handler.OAuth2AuthenticationFailureHandler;
+import xyz.jiangsier.access.auth.handler.OAuth2AuthenticationSuccessHandler;
+import xyz.jiangsier.access.auth.ApiTokenAuthenticationProvider;
+import xyz.jiangsier.access.auth.user.SysUserDetailsManager;
 import xyz.jiangsier.service.account.SysAuthorityService;
 import xyz.jiangsier.service.account.SysBindService;
 import xyz.jiangsier.service.account.SysUserService;
@@ -65,25 +65,25 @@ public class SecurityConfig {
 
     private void configPrivatePath(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
         if (ArrayUtils.isNotEmpty(privateUri)) {
-            registry.antMatchers(privateUri).denyAll();
+            registry.requestMatchers(privateUri).denyAll();
         }
     }
 
     private void configPublicPath(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
         if (ArrayUtils.isNotEmpty(publicUri)) {
-            registry.antMatchers(publicUri).permitAll().antMatchers(oauth2LoginFailureUri).permitAll();
+            registry.requestMatchers(publicUri).permitAll().requestMatchers(oauth2LoginFailureUri).permitAll();
         }
     }
 
     private void configAdminPath(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
         if (ArrayUtils.isNotEmpty(adminUri)) {
-            registry.antMatchers(adminUri).hasRole(AuthorityUtils.adminRole());
+            registry.requestMatchers(adminUri).hasRole(AuthorityUtils.adminRole());
         }
     }
 
     private void configApiPath(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
         if (ArrayUtils.isNotEmpty(apiUri)) {
-            registry.antMatchers(apiUri).hasRole(AuthorityUtils.clientRole());
+            // registry.antMatchers(apiUri).hasRole(AuthorityUtils.clientRole());
         }
     }
 
@@ -136,7 +136,7 @@ public class SecurityConfig {
         if (ArrayUtils.isNotEmpty(apiUri)) {
             http.addFilterAfter(
                     apiAuthenticationFilter(apiTokenAuthenticationProvider), UsernamePasswordAuthenticationFilter.class);
-            http.csrf().ignoringAntMatchers(apiUri);
+            http.csrf(csrfConf -> csrfConf.ignoringRequestMatchers(apiUri));
         }
 
         http.userDetailsService(userDetailsManager);

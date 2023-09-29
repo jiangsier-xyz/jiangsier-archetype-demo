@@ -24,11 +24,11 @@ iid=$(docker build --platform=linux/amd64 \
   --build-arg UID=${HELM_securityContext_runAsUser:-2023} \
   --build-arg GID=${HELM_securityContext_runAsGroup:-2023} \
   ${ARGS[*]} \
-  -t ${HELM_image_repository}:${VERSION} \
+  -t ${HELM_image_repository}:latest \
   -f Dockerfile . || exit -1)
 
 if [[ -n "${iid} " ]]; then
-  docker push ${HELM_image_repository}:${VERSION}
+  docker push ${HELM_image_repository}:latest
 fi
 
 rm -f ${PROJECT_NAME}.jar

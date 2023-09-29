@@ -1,4 +1,4 @@
-package xyz.jiangsier.auth.handler;
+package xyz.jiangsier.access.auth.handler;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -8,11 +8,11 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
-import xyz.jiangsier.auth.customizer.OAuth2AuthorizationRequestCustomizer;
+import xyz.jiangsier.access.auth.customizer.OAuth2AuthorizationRequestCustomizer;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Objects;
 

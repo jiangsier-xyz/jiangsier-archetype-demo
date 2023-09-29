@@ -1,4 +1,4 @@
-package xyz.jiangsier.auth.user;
+package xyz.jiangsier.access.auth.user;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -24,9 +24,11 @@ import xyz.jiangsier.model.User;
 
 import java.net.URL;
 import java.time.DateTimeException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -171,6 +173,11 @@ public class SysUserDetailsManager implements UserDetailsManager {
             if (StringUtils.isNotBlank(uid)) {
                 username = uid;
             }
+        } else if ("github".equalsIgnoreCase(platform)) {
+            String login = oAuth2User.getAttribute("login");
+            if (StringUtils.isNotBlank(login)) {
+                username = login;
+            }
         }
 
         return username + "@" + platform;
@@ -197,6 +204,11 @@ public class SysUserDetailsManager implements UserDetailsManager {
                 String name = oAuth2User.getAttribute("name");
                 nickname = StringUtils.isBlank(name) ? nickname : name;
             }
+        } else if ("github".equalsIgnoreCase(platform)) {
+            String login = oAuth2User.getAttribute("login");
+            if (StringUtils.isNotBlank(login)) {
+                nickname = login;
+            }
         } else {
             String name = oAuth2User.getAttribute(StandardClaimNames.NICKNAME);
             if (StringUtils.isBlank(name)) {
@@ -207,6 +219,34 @@ public class SysUserDetailsManager implements UserDetailsManager {
             }
         }
         return nickname;
+    }
+
+    private String getSub(OAuth2User oAuth2User, String platform) {
+        String sub = oAuth2User.getAttribute(IdTokenClaimNames.SUB);
+        if (StringUtils.isBlank(sub)) {
+            sub = getUsername(oAuth2User, platform);
+        }
+        return sub;
+    }
+
+    private Collection<String> getAud(OAuth2User oAuth2User, OAuth2AuthorizedClient oAuth2Client, String platform) {
+        Collection<String> audSet = oAuth2User.getAttribute(IdTokenClaimNames.AUD);
+        if (CollectionUtils.isEmpty(audSet)) {
+            audSet = Collections.singleton(oAuth2Client.getClientRegistration().getClientId());
+        }
+        return audSet;
+    }
+
+    private String getProfile(OAuth2User oAuth2User, String platform) {
+        String profile = oAuth2User.getAttribute(StandardClaimNames.PROFILE);
+        if (StringUtils.isBlank(profile)) {
+            if ("github".equalsIgnoreCase(platform)) {
+                profile = oAuth2User.getAttribute("html_url");
+            } else {
+                profile = oAuth2User.getAttribute("url");
+            }
+        }
+        return profile;
     }
 
     private Date toDate(String dateStr, String zoneInfo) {
@@ -227,11 +267,23 @@ public class SysUserDetailsManager implements UserDetailsManager {
         return null;
     }
 
-    private Date timestampToDate(Long timestamp) {
+    private Date timestampToDate(Object timestamp) {
         if (Objects.isNull(timestamp)) {
             return null;
         }
-        return new Date(timestamp);
+
+        try {
+            if (timestamp instanceof String timestampStr) {
+                return Date.from(Instant.parse(timestampStr));
+            } else if (timestamp instanceof Long timestampLong) {
+                return new Date(timestampLong);
+            } else {
+                throw new IllegalArgumentException("Unknown timestamp class: " + timestamp.getClass());
+            }
+        } catch (IllegalArgumentException | DateTimeParseException e) {
+            logger.warn("Unknown timestamp {}", timestamp, e);
+            return null;
+        }
     }
 
     private Byte toByte(Boolean bool) {
@@ -241,11 +293,14 @@ public class SysUserDetailsManager implements UserDetailsManager {
     public SysUserDetails createSysUserFromOAuth2UserIfNecessary(OAuth2User oAuth2User,
                                                                  OAuth2AuthorizedClient oAuth2Client) {
         String platform = oAuth2Client.getClientRegistration().getRegistrationId();
-        String sub = oAuth2User.getAttribute(IdTokenClaimNames.SUB);
+        String sub = getSub(oAuth2User, platform);
         User user = Optional.ofNullable(bindService.getUserIdByPlatformAndSub(platform, sub))
                 .filter(StringUtils::isNotBlank)
                 .map(userService::loadUserByUserId)
                 .orElse(null);
+        Set<String> authorities = oAuth2User.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toSet());
         if (Objects.isNull(user)) {
             String zoneInfo = oAuth2User.getAttribute(StandardClaimNames.ZONEINFO);
 
@@ -257,7 +312,7 @@ public class SysUserDetailsManager implements UserDetailsManager {
                     .withMiddleName(oAuth2User.getAttribute(StandardClaimNames.MIDDLE_NAME))
                     .withFamilyName(oAuth2User.getAttribute(StandardClaimNames.FAMILY_NAME))
                     .withPreferredUsername(oAuth2User.getAttribute(StandardClaimNames.PREFERRED_USERNAME))
-                    .withProfile(oAuth2User.getAttribute(StandardClaimNames.PROFILE))
+                    .withProfile(getProfile(oAuth2User, platform))
                     .withPicture(oAuth2User.getAttribute(StandardClaimNames.PICTURE))
                     .withWebsite(oAuth2User.getAttribute(StandardClaimNames.WEBSITE))
                     .withEmail(oAuth2User.getAttribute(StandardClaimNames.EMAIL))
@@ -277,11 +332,9 @@ public class SysUserDetailsManager implements UserDetailsManager {
                     .withPasswordExpiresAt(null);
 
             userService.createUser(user);
+        } else {
+            authorities.addAll(authorityService.listAuthorities(user));
         }
-
-        Set<String> authorities = oAuth2User.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toSet());
 
         if (CollectionUtils.isNotEmpty(authorities)) {
             authorityService.updateAuthorities(user, authorities);
@@ -313,9 +366,9 @@ public class SysUserDetailsManager implements UserDetailsManager {
                 .map(AbstractOAuth2Token::getExpiresAt)
                 .map(Date::from)
                 .orElse(null);
-        String sub = oAuth2User.getAttribute(IdTokenClaimNames.SUB);
+        String sub = getSub(oAuth2User, platform);
         URL iss = oAuth2User.getAttribute(IdTokenClaimNames.ISS);
-        Collection<String> aud = oAuth2User.getAttribute(IdTokenClaimNames.AUD);
+        Collection<String> aud = getAud(oAuth2User, oAuth2Client, platform);
         return bindService.bind(sysUser, platform, sub, iss, aud, refreshTokenValue, issuedAt, expiresAt);
     }
 }

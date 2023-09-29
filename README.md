@@ -57,7 +57,7 @@ The cache configuration is in [cache-config.yml](https://github.com/jiangsier-xy
 ### Distributed Session
 jiangsier-archetype-demo implements Spring Session based on Redisson, and sets the Session expiration time to one hour, refer to [RedissonSessionConfig.java](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/jiangsier-archetype-demo-start/src/main/java/xyz/jiangsier/config/RedissonCacheConfig.java). As long as a server in the cluster has a Session set, the entire cluster will know.
 
-Note that the implementation of RedissonConnectionFactory is related to the version of spring-session-data-redis. The second-party package currently used is redisson-spring-data-27 (because spring-session-data-redis uses 2.7.0). For specific correspondence, see [GitHub](https://github.com/redisson/redisson/tree/master/redisson-spring-data#usage).
+Note that the implementation of RedissonConnectionFactory is related to the version of spring-session-data-redis. The second-party package currently used is redisson-spring-data-31 (because spring-session-data-redis uses 3.1.x). For specific correspondence, see [GitHub](https://github.com/redisson/redisson/tree/master/redisson-spring-data#usage).
 
 ### Distributed Scheduling
 TODO
@@ -91,6 +91,7 @@ In this case, no matter whether the user's authentication on the external site i
 jiangsier-archetype-demo supports the APIs under specified path (default "/api/\*\*") to use token string for authentication. There are two ways to obtain token information:
 - Get the token from the parameter, the default parameter name is "\_token", which is configurable.
 - Get the token from the request header, the default key name is "X-API-TOKEN", which is configurable.
+- If non of them is configured, use Bearer Token for authentication.
 Priority is obtained from the parameters. If multiple \_token parameters are passed in, the first valid token shall prevail. Multiple tokens can also be passed in the request header, separated by "," and the first valid token from the left shall prevail.
 
 Logged-in users can view, create, delete, and disable tokens through the "/token/\*\*" series of APIs, see [AuthController.java](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/jiangsier-archetype-demo-start/src/main/java/xyz/jiangsier/controller/AuthController.java). The validity period is specified in seconds when the token is created. Defaults to 1 day if not specified. Each user can create up to 5 tokens.

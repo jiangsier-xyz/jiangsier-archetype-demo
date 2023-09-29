@@ -7,7 +7,7 @@ auth:
     aliyun:
       enable: true
       authorizationGrantType: authorization_code
-      clientAuthenticationMethod: basic
+      clientAuthenticationMethod: client_secret_basic
       clientName: Aliyun
       scope: openid
       clientId: ''
@@ -40,7 +40,7 @@ debug:
 image:
   pullPolicy: Always
   repository: jiangsier/jiangsier-archetype-demo
-  tag: '1.0.0-SNAPSHOT'
+  tag: 'latest'
 ingress:
   enabled: false
   className: nginx

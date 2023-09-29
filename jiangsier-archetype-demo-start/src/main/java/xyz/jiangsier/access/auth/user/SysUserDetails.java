@@ -1,4 +1,4 @@
-package xyz.jiangsier.auth.user;
+package xyz.jiangsier.access.auth.user;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.GrantedAuthority;

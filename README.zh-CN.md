@@ -57,7 +57,7 @@ jiangsier-archetype-demo 基于 Redisson 实现了 Spring Cache，参考 [Rediss
 ### 分布式会话
 jiangsier-archetype-demo 基于 Redisson 实现了 Spring Session，并且设置了 Session 过期时间为一小时，参考 [RedissonSessionConfig.java](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/jiangsier-archetype-demo-start/src/main/java/xyz/jiangsier/config/RedissonCacheConfig.java)。只要集群里的一台服务器设置了 Session，则整个集群可见。
 
-注意 RedissonConnectionFactory 的实现，与 spring-session-data-redis 版本有关，目前使用的二方包是 redisson-spring-data-27（因为 spring-session-data-redis 采用了 2.7.0）。具体对应关系见 [GitHub](https://github.com/redisson/redisson/tree/master/redisson-spring-data#usage)。
+注意 RedissonConnectionFactory 的实现，与 spring-session-data-redis 版本有关，目前使用的二方包是 redisson-spring-data-31（因为 spring-session-data-redis 采用了 3.1.x）。具体对应关系见 [GitHub](https://github.com/redisson/redisson/tree/master/redisson-spring-data#usage)。
 
 ### 分布式调度
 TODO
@@ -91,6 +91,7 @@ TODO
 jiangsier-archetype-demo 支持制定路径下的接口（默认“/api/\*\*”）使用 token 字符串进行认证。获取 token 信息的方式有两种：
 - 从参数中获取 token，默认参数名为“\_token”，可配置。
 - 从请求头中获取 token，默认键名为“X-API-TOKEN”，可配置。
+- 均未配置的情况下，采用 Bearer Token 方式鉴权。
 优先从参数中获取。如果配置了多个 \_token 参数，以第一个有效 token 为准。请求头中也可传递多个 token，以","进行分隔，以左数第一个有效 token 为准。
 
 已登录用户可以通过"/token/\*\*"系列接口来查看、创建、删除、禁用 token，详见 [AuthController.java](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/jiangsier-archetype-demo-start/src/main/java/xyz/jiangsier/controller/AuthController.java)。token 创建时以秒为单位指定有效期。如果不指定，默认为 1 天。每个用户最多可以创建 5 个token。

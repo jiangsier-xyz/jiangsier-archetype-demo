@@ -1,9 +1,9 @@
-package xyz.jiangsier.auth.authentication;
+package xyz.jiangsier.access.auth;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import xyz.jiangsier.auth.user.SysUserDetails;
+import xyz.jiangsier.access.auth.user.SysUserDetails;
 import xyz.jiangsier.util.AuthorityUtils;
 
 import java.util.LinkedList;
