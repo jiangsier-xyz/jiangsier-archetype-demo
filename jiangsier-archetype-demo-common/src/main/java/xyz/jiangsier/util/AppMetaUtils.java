@@ -30,9 +30,9 @@ public class AppMetaUtils {
     private static String appUrl;
 
     public static String getName() {
-        if (Objects.isNull(appName)) {
+        if (appName == null) {
             synchronized (AppMetaUtils.class) {
-                if (Objects.isNull(appName)) {
+                if (appName == null) {
                     appName = getProperty(NAME_KEY);
                 }
             }
@@ -41,9 +41,9 @@ public class AppMetaUtils {
     }
 
     public static String getVersion() {
-        if (Objects.isNull(appVersion)) {
+        if (appVersion == null) {
             synchronized (AppMetaUtils.class) {
-                if (Objects.isNull(appVersion)) {
+                if (appVersion == null) {
                     appVersion = getProperty(VERSION_KEY);
                 }
             }
@@ -52,9 +52,9 @@ public class AppMetaUtils {
     }
 
     public static String getBuildTimestamp() {
-        if (Objects.isNull(appBuildTimestamp)) {
+        if (appBuildTimestamp == null) {
             synchronized (AppMetaUtils.class) {
-                if (Objects.isNull(appBuildTimestamp)) {
+                if (appBuildTimestamp == null) {
                     appBuildTimestamp = getProperty(BUILD_TIMESTAMP_KEY);
                 }
             }
@@ -63,9 +63,9 @@ public class AppMetaUtils {
     }
 
     public static String getBuildNumber() {
-        if (Objects.isNull(appBuildNumber)) {
+        if (appBuildNumber == null) {
             synchronized (AppMetaUtils.class) {
-                if (Objects.isNull(appBuildNumber)) {
+                if (appBuildNumber == null) {
                     appBuildNumber = getProperty(BUILD_NUMBER_KEY);
                 }
             }
@@ -74,9 +74,9 @@ public class AppMetaUtils {
     }
 
     public static String getScmUrl() {
-        if (Objects.isNull(appScmUrl)) {
+        if (appScmUrl == null) {
             synchronized (AppMetaUtils.class) {
-                if (Objects.isNull(appScmUrl)) {
+                if (appScmUrl == null) {
                     appScmUrl = getProperty(SCM_URL_KEY);
                 }
             }
@@ -85,7 +85,7 @@ public class AppMetaUtils {
     }
 
     public static String getUrl() {
-        if (Objects.isNull(appUrl)) {
+        if (appUrl == null) {
             synchronized (AppMetaUtils.class) {
                 appUrl = getProperty(URL_KEY);
             }
@@ -96,7 +96,7 @@ public class AppMetaUtils {
     private static String getProperty(String name) {
         Properties properties = new Properties();
         try (InputStream in = AppMetaUtils.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE)) {
-            if (Objects.isNull(in)) {
+            if (in == null) {
                 return null;
             }
             properties.load(in);

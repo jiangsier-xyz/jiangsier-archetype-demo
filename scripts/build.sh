@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 source $(dirname ${BASH_SOURCE[0]})/setenv.sh
 
@@ -12,11 +12,6 @@ fi
 cd ${DOCKER_CONFIG_HOME}
 
 cp -f ${PROJECT_PATH}/${STARTER_MODULE}/target/${STARTER_MODULE}-${VERSION}.jar ${PROJECT_NAME}.jar
-
-builder=$(docker buildx ls | grep "^multiple-platforms-builder" | awk '{print $1}')
-if [[ -z "${builder}" ]]; then
-  docker buildx create --name multiple-platforms-builder --driver docker-container --bootstrap --use
-fi
 
 iid=$(docker build --platform=linux/amd64 \
   --build-arg APP_NAME=${PROJECT_NAME} \

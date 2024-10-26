@@ -33,10 +33,10 @@ public class FullNameKeyGenerator implements KeyGenerator {
     public Object generate(Object target, Method method, Object... params) {
         Pair<String[], String> cachesKeyExpr = getCachesKeyExpr(method);
         String key = null;
-        if (Objects.nonNull(cachesKeyExpr) && !ObjectUtils.isEmpty(cachesKeyExpr.getRight())) {
+        if (cachesKeyExpr != null && !ObjectUtils.isEmpty(cachesKeyExpr.getRight())) {
             key = generateSpELKey(target, method, params, cachesKeyExpr);
         }
-        if (ObjectUtils.isEmpty(key)) {
+        if (!StringUtils.hasText(key)) {
             key = generateDefaultKey(target, method, params);
         }
         return key;
@@ -60,7 +60,7 @@ public class FullNameKeyGenerator implements KeyGenerator {
 
     private Pair<String[], String> getCachesKeyExpr(Method method) {
         Pair<String[], String> cachesKeyExpr = getCachesKeyExpr(method.getAnnotations());
-        return Objects.nonNull(cachesKeyExpr) ? cachesKeyExpr
+        return cachesKeyExpr != null ? cachesKeyExpr
                 : getCachesKeyExpr(method.getDeclaringClass().getAnnotations());
     }
 

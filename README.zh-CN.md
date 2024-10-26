@@ -12,17 +12,17 @@ mgb.sh 首先在你的机器上使用 `docker run` 运行一个 MySQL 实例，�
 你可以使用 [build.sh](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/bin/build.sh) 来构建你的项目。它依次完成下面的工作：
 1. 使用 Maven 编译和打包你的项目。
 2. 使用 `docker buildx` 来同时生成 amd64 和 arm64 的 docker 镜像，并 push 到 Docker 仓库（默认是 hub.docker.com，请配置你自己的私有仓库）。
-3. 拉取 Helm 配置中声明的依赖 charts，目前依赖了 bitnami/mysql 和 bitnami/redis-cluster。
+3. 拉取 Helm 配置中声明的依赖 charts，目前依赖了 bitnami/mysql 和 bitnami/redis。
 
 ### 安装、升级和卸载应用程序
-你可以分别使用 [install.sh](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/bin/install.sh)、[upgrade.sh](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/bin/upgrade.sh)、[uninstall.sh](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/bin/uninstall.sh) 来安装、升级、卸载你的应用及其依赖（MySQL & Redis）。注意，诸如数据库 URL、密码等信息，会通过安装时生成的一个 Spring 配置文件（application-private.yml） 以 Secret 资源的方式挂载到容器，并被 Spring-boot 应用加载。具体内容可以参考 [_spring.tpl](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/app-meta/helm-config/templates/_spring.tpl) 和 [deployment.yaml](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/app-meta/helm-config/templates/deployment.yaml)。
+你可以分别使用 [install.sh](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/bin/install.sh)、[upgrade.sh](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/bin/upgrade.sh)、[uninstall.sh](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/bin/uninstall.sh) 来安装、升级、卸载你的应用及其依赖（MySQL & Redis）。注意，诸如数据库 URL、密码等信息，会通过安装时生成的一个 Spring 配置文件（application-private.yml） 以 Secret 资源的方式挂载到容器，并被 Spring-boot 应用加载。具体内容可以参考 [_spring.tpl](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/configs/helm/templates/_spring.tpl) 和 [deployment.yaml](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/configs/helm/templates/deployment.yaml)。
 
 ### 调试应用程序
 #### 本地调试
-默认情况下，jiangsier-archetype-demo 使用 helm 中的部分配置来生成运行时需要的 Spring 配置，尽量避免同一个参数在多个地方、多种系统里维护（比如 MySQL URL）。具体的渲染模版请参考 [_spring.tpl](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/app-meta/helm-config/templates/_spring.tpl)。渲染结果会以名为“jiangsier-archetype-demo-spring-properties”的 Secret 资源被应用程序访问，对应的键/文件名是“application-private.yml”。
+默认情况下，jiangsier-archetype-demo 使用 helm 中的部分配置来生成运行时需要的 Spring 配置，尽量避免同一个参数在多个地方、多种系统里维护（比如 MySQL URL）。具体的渲染模版请参考 [_spring.tpl](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/configs/helm/templates/_spring.tpl)。渲染结果会以名为“jiangsier-archetype-demo-spring-properties”的 Secret 资源被应用程序访问，对应的键/文件名是“application-private.yml”。
 
 如果想要进行本地调试，一般不会运行 helm 渲染，并且，许多服务的连接地址通常也不是 k8s 中自动部署的服务地址。你需要自行解决依赖服务（如 MySQL、Redis）的问题，并根据实际情况，手工维护一份 [application-local.yml](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/jiangsier-archetype-demo-start/src/main/resources/application-local.yml)，再在 IDE 的调试选项中加载它，就可以正常调试你的应用了。
-> [mysql-local.sh](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/bin/mysql-local.sh) 和 [redis-local.sh](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/bin/redis-local.sh) 可以帮助你运行/停止一个本地 MySQL 和 Redis，希望能有助于你的调试。
+> [local-deps.sh](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/scripts/local-deps.sh) 可以帮助你运行/停止一个本地 MySQL 和 Redis，希望能有助于你的调试。
 
 #### 远程调试
 有时候本地调试并不能重现服务器上的问题，或者你找不到应用程序依赖的服务的提供方，因此你期望对 k8s 集群里的 pods 直接进行远程调试。jiangsier-archetype-demo 做了这方面的考虑，你按照以下步骤来进行：
@@ -57,7 +57,7 @@ jiangsier-archetype-demo 基于 Redisson 实现了 Spring Cache，参考 [Rediss
 ### 分布式会话
 jiangsier-archetype-demo 基于 Redisson 实现了 Spring Session，并且设置了 Session 过期时间为一小时，参考 [RedissonSessionConfig.java](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/jiangsier-archetype-demo-start/src/main/java/xyz/jiangsier/config/RedissonCacheConfig.java)。只要集群里的一台服务器设置了 Session，则整个集群可见。
 
-注意 RedissonConnectionFactory 的实现，与 spring-session-data-redis 版本有关，目前使用的二方包是 redisson-spring-data-31（因为 spring-session-data-redis 采用了 3.1.x）。具体对应关系见 [GitHub](https://github.com/redisson/redisson/tree/master/redisson-spring-data#usage)。
+注意 RedissonConnectionFactory 的实现，与 spring-session-data-redis 版本有关，目前使用的二方包是 redisson-spring-data-33（因为 spring-session-data-redis 采用了 3.3.x）。具体对应关系见 [GitHub](https://github.com/redisson/redisson/tree/master/redisson-spring-data#usage)。
 
 ### 分布式调度
 TODO
@@ -136,15 +136,11 @@ ac11000216560387254571001d0093|-|c.a.t.e.c.c.TestComponent::login|S|19|Alice,*|t
 ## jiangsier-archetype-demo 依赖什么
 作为云原生应用，jiangsier-archetype-demo 所依赖的服务，均通过 helm repository 拉取，部署到您的集群，无需您购买单独的云服务。
 
-当然，从运维的角度，也许您更希望购买有 SLA(Service Level Agreement) 保障的云服务，那么只需要设置 [Helm 配置](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/app-meta/helm-config/values.yaml)参数为
+当然，从运维的角度，也许您更希望购买有 SLA(Service Level Agreement) 保障的云服务，那么只需要设置 [Helm 配置](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/configs/helm/values.yaml)参数为
 ```yaml
-bitnami:
-  mysql:
-    enabled: false
-  redis:
-    enabled: false
-
 mysql:
+  deployment:
+    enabled: false
   url: <your mysql url>
   auth:
     rootPassword: <your mysql root password>
@@ -152,6 +148,8 @@ mysql:
     password: <your mysql password for the username>
 
 redis:
+  deployment:
+    enabled: false
   url: <your redis url>
   auth:
     password: <your redis password>
@@ -168,7 +166,7 @@ jiangsier-archetype-demo 默认部署 [bitnami/mysql](https://artifacthub.io/pac
 ### Redis
 如上文所述，jiangsier-archetype-demo 使用 Redis 作为后端实现了大部分分布式能力。Redis 是 jiangsier-archetype-demo 的必备组件。
 
-jiangsier-archetype-demo 默认部署 [bitnami/redis-cluster](https://artifacthub.io/packages/helm/bitnami/redis-cluster) 到同一命名空间，这时，Reids url 默认是 `redis://jiangsier-archetype-demo-redis-cluster:6379`
+jiangsier-archetype-demo 默认部署 [bitnami/redis](https://artifacthub.io/packages/helm/bitnami/redis) 到同一命名空间，这时，Reids url 默认是 `redis://jiangsier-archetype-demo-redis-master:6379`
 
 你也可以指定其他的 Redis 实例。
 

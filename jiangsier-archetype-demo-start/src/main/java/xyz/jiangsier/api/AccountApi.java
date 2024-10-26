@@ -1,25 +1,24 @@
 package xyz.jiangsier.api;
 
-import xyz.jiangsier.service.account.SysUserService;
-import xyz.jiangsier.api.dto.UserBasicInfoDTO;
-import xyz.jiangsier.api.dto.UserDetailsDTO;
-import xyz.jiangsier.api.util.AuthUtils;
-import xyz.jiangsier.api.util.CommonUtils;
-import xyz.jiangsier.model.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import xyz.jiangsier.api.dto.UserBasicInfoDTO;
+import xyz.jiangsier.api.dto.UserDetailsDTO;
+import xyz.jiangsier.api.util.AuthUtils;
+import xyz.jiangsier.api.util.CommonUtils;
+import xyz.jiangsier.model.User;
+import xyz.jiangsier.service.account.SysUserService;
 
-import jakarta.validation.constraints.NotBlank;
-
-@Service
+@Controller
 @Tag(name = "account")
 @RequestMapping("/api/account")
 @ResponseBody

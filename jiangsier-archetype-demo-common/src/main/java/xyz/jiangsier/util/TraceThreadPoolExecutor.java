@@ -19,16 +19,16 @@ public class TraceThreadPoolExecutor extends ThreadPoolExecutor {
 
     @Override
     public void execute(Runnable runnable) {
-        if (Objects.isNull(runnable)) {
+        if (runnable == null) {
             throw new NullPointerException();
         }
 
         String traceId = TraceUtils.getTraceId();
-        Map<String, Object> traceAttributes = TraceUtils.getTraceAttributes();
+        Map<String, String> traceAttributes = TraceUtils.getTraceAttributes();
         super.execute(() -> {
             TraceUtils.startTrace(traceId);
             if (MapUtils.isNotEmpty(traceAttributes)) {
-                traceAttributes.forEach(TraceUtils::setTraceAttribute);
+                traceAttributes.forEach(TraceUtils::putTraceAttribute);
             }
             try {
                 runnable.run();

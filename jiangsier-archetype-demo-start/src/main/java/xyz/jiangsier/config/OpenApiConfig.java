@@ -6,22 +6,27 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import xyz.jiangsier.util.AppMetaUtils;
 
-import java.util.Objects;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 @Configuration
+@Slf4j
 @SuppressWarnings("unused")
 public class OpenApiConfig {
     @Bean
     public OpenAPI customOpenAPI(
-            @Value("${auth.token.headerName:#{null}}}") String securityHeaderName,
-            @Value("${auth.token.parameterName:#{null}}}") String securityParameterName) {
+            @Value("${auth.token.headerName:#{null}}") String securityHeaderName,
+            @Value("${auth.token.parameterName:#{null}}") String securityParameterName) {
         OpenAPI openAPI = new OpenAPI();
-        if (Objects.isNull(securityHeaderName) && Objects.isNull(securityParameterName)) {
+        if (securityHeaderName == null && securityParameterName == null) {
             openAPI.components(new Components()
                     .addSecuritySchemes("bearerAuth", new SecurityScheme()
                             .type(SecurityScheme.Type.HTTP)
@@ -30,7 +35,7 @@ public class OpenApiConfig {
         } else {
             Components components = new Components();
             SecurityRequirement securityRequirement = new SecurityRequirement();
-            if (Objects.nonNull(securityHeaderName)) {
+            if (securityHeaderName != null) {
                 components.addSecuritySchemes("SysApiTokenHeader", new SecurityScheme()
                         .type(SecurityScheme.Type.APIKEY)
                         .in(SecurityScheme.In.HEADER)
@@ -38,7 +43,7 @@ public class OpenApiConfig {
                 securityRequirement.addList("SysApiTokenHeader");
             }
 
-            if (Objects.nonNull(securityParameterName)) {
+            if (securityParameterName != null) {
                 components.addSecuritySchemes("SysApiTokenParameter", new SecurityScheme()
                         .type(SecurityScheme.Type.APIKEY)
                         .in(SecurityScheme.In.QUERY)
@@ -56,5 +61,25 @@ public class OpenApiConfig {
                 .addServersItem(new Server().url("/"));
 
         return openAPI;
+    }
+
+    private String getReadmeContent() {
+        String path = "/README.md";
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        try (InputStream in = OpenApiConfig.class.getResourceAsStream(path)) {
+            if (in == null) {
+                return AppMetaUtils.getUrl();
+            }
+            byte[] data = new byte[512];
+            int n;
+            while ((n = in.read(data)) != -1) {
+                buffer.write(data, 0, n);
+            }
+        } catch (IOException e) {
+            log.error("Failed to load {}", path, e);
+            return AppMetaUtils.getUrl();
+        }
+
+        return buffer.toString(StandardCharsets.UTF_8);
     }
 }

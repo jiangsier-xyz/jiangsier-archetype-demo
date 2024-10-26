@@ -212,7 +212,7 @@ public class DiGraph<T> implements Graph<T> {
     private Vertex<T> getVertex(T o) {
         Objects.requireNonNull(o);
         Vertex<T> vertex = indexMap.get(o);
-        if (Objects.isNull(vertex)) {
+        if (vertex == null) {
             throw new IllegalArgumentException("Vertex does not in graph: " + o);
         }
         return vertex;
@@ -262,7 +262,7 @@ public class DiGraph<T> implements Graph<T> {
     @SafeVarargs
     @Override
     public final void connect(T... arr) {
-        if (Objects.isNull(arr)) {
+        if (arr == null) {
             return;
         }
 
@@ -279,7 +279,7 @@ public class DiGraph<T> implements Graph<T> {
     @SafeVarargs
     @Override
     public final void disconnect(T... arr) {
-        if (Objects.isNull(arr)) {
+        if (arr == null) {
             return;
         }
 
@@ -442,7 +442,7 @@ public class DiGraph<T> implements Graph<T> {
     @Override
     public boolean remove(Object o) {
         Vertex<T> vertex = indexMap.remove(o);
-        if (Objects.nonNull(vertex)) {
+        if (vertex != null) {
             // 断开前继顶点与本顶点的边
             List<Vertex<T>> predecessors = vertex.getPredecessors();
             for (Iterator<Vertex<T>> it = predecessors.iterator(); it.hasNext();) {

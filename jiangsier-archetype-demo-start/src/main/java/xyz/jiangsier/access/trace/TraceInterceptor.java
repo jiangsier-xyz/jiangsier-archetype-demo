@@ -6,6 +6,8 @@ import jakarta.validation.ConstraintViolationException;
 import org.apache.catalina.connector.ClientAbortException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,7 +20,6 @@ import xyz.jiangsier.util.TraceUtils;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 public class TraceInterceptor implements HandlerInterceptor {
@@ -34,7 +35,7 @@ public class TraceInterceptor implements HandlerInterceptor {
     );
 
     private boolean isBadRequest(int status, Exception ex) {
-        if (Objects.nonNull(ex) && badRequestExceptions.contains(ex.getClass())) {
+        if (ex != null && badRequestExceptions.contains(ex.getClass())) {
             return true;
         } else {
             return status >= 400 && status < 500;
@@ -44,10 +45,11 @@ public class TraceInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         TraceUtils.startTrace();
+        TraceUtils.putTraceAttribute("traceId", TraceUtils.getTraceId());
         Optional.ofNullable(SecurityContextHolder.getContext())
                 .map(SecurityContext::getAuthentication)
                 .map(Principal::getName)
-                .ifPresent(username -> TraceUtils.setTraceAttribute("TRACE_USER", username));
+                .ifPresent(username ->  TraceUtils.putTraceAttribute("username", username));
         return true;
     }
 
@@ -60,30 +62,37 @@ public class TraceInterceptor implements HandlerInterceptor {
         String username = Optional.ofNullable(SecurityContextHolder.getContext())
                 .map(SecurityContext::getAuthentication)
                 .map(Principal::getName)
-                .orElse((String) TraceUtils.getTraceAttribute("TRACE_USER"));
+                .orElse(TraceUtils.getTraceAttribute("username"));
 
         String service = request.getServletPath();
         String method = request.getMethod();
         String[] args = new String[]{ request.getQueryString() };
-        int responseCode = response.getStatus();
+        int responseCode;
+        if (ex instanceof AuthenticationException) {
+            responseCode = HttpStatus.UNAUTHORIZED.value();
+        } else if (ex instanceof AccessDeniedException) {
+            responseCode = HttpStatus.FORBIDDEN.value();
+        } else {
+            responseCode = response.getStatus();
+        }
         TraceUtils.TraceStatus status = TraceUtils.TraceStatus.SUCCESSFUL;
-        if (Objects.nonNull(ex) || responseCode >= 400) {
+        if (ex != null || responseCode >= 400) {
             status = isBadRequest(responseCode, ex) ?
                     TraceUtils.TraceStatus.BAD_REQUEST :
                     TraceUtils.TraceStatus.FAILED;
         }
-        long elapseTime = TraceUtils.endTrace();
+        long elapseTime = TraceUtils.stopTrace();
 
         TraceUtils.TraceInfoBuilder builder = new TraceUtils.TraceInfoBuilder();
-        builder.setTraceId(TraceUtils.getTraceId())
-                .setUsername(username)
-                .setMethod(service + "::" + method)
-                .setStatus(status)
-                .setArgs(args)
-                .setResponse(responseCode)
-                .setThrowable(ex)
-                .setElapseTime(elapseTime);
-
+        builder.traceId(TraceUtils.getTraceId())
+                .username(username)
+                .method(service + "::" + method)
+                .status(status)
+                .args(args)
+                .response(responseCode)
+                .throwable(ex)
+                .elapseTime(elapseTime);
         logger.trace(builder.build());
+        TraceUtils.endTrace();
     }
 }

@@ -12,17 +12,17 @@ The above process means that you need to install the Docker runtime environment 
 You can use [build.sh](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/bin/build.sh) to build your project. It does the following in order:
 1. Compile and package your project using Maven.
 2. Use `docker buildx` to generate amd64 and arm64 docker images at the same time, and push to the Docker warehouse (the default is hub.docker.com, please configure your own private warehouse).
-3. Pull the dependent charts declared in the Helm configuration, currently relying on bitnami/mysql and bitnami/redis-cluster.
+3. Pull the dependent charts declared in the Helm configuration, currently relying on bitnami/mysql and bitnami/redis.
 
 ### Install, upgrade and uninstall the application
-You can use [install.sh](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/bin/install.sh), [upgrade.sh](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/bin/upgrade.sh), [uninstall.sh](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/bin/uninstall.sh) to install, upgrade, uninstall your application and Its dependencies (MySQL & Redis). Note that information such as database URL, password, etc. will be mounted to the container as a Secret resource through a Spring configuration file (application-private.yml) generated during installation, and loaded by the Spring-boot application. For details, please refer to [_spring.tpl](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/app-meta/helm-config/templates/_spring.tpl) and [deployment.yaml](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/app-meta/helm-config/templates/deployment.yaml).
+You can use [install.sh](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/bin/install.sh), [upgrade.sh](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/bin/upgrade.sh), [uninstall.sh](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/bin/uninstall.sh) to install, upgrade, uninstall your application and Its dependencies (MySQL & Redis). Note that information such as database URL, password, etc. will be mounted to the container as a Secret resource through a Spring configuration file (application-private.yml) generated during installation, and loaded by the Spring-boot application. For details, please refer to [_spring.tpl](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/configs/helm/templates/_spring.tpl) and [deployment.yaml](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/configs/helm/templates/deployment.yaml).
 
 ### Debugging the application
 #### Local debugging
-By default, jiangsier-archetype-demo uses part of the configuration in helm to generate the Spring configuration needed at runtime, and try to avoid maintaining same parameters in multiple places and systems (such as MySQL URL). The rendering template is [_spring.tpl](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/app-meta/helm-config/templates/\_spring.tpl). The rendering result will be accessed by the application as a Secret resource named "jiangsier-archetype-demo-spring-properties", and the corresponding key/file name is "application-private.yml".
+By default, jiangsier-archetype-demo uses part of the configuration in helm to generate the Spring configuration needed at runtime, and try to avoid maintaining same parameters in multiple places and systems (such as MySQL URL). The rendering template is [_spring.tpl](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/configs/helm/templates/\_spring.tpl). The rendering result will be accessed by the application as a Secret resource named "jiangsier-archetype-demo-spring-properties", and the corresponding key/file name is "application-private.yml".
 
 If you want to debug locally, you generally don't run helm rendering, and the connection addresses of many services are usually not the service addresses automatically deployed in k8s. You need to solve the problem of dependent services (such as MySQL, Redis) by yourself, and manually maintain an [application-local.yml](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/jiangsier-archetype-demo-start/src/main/resources/application-local.yml), and load it in the debug option of the IDE, then you can debug your application normally.
-> [mysql-local.sh](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/bin/mysql-local.sh) and [redis-local.sh](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/bin/redis-local.sh) can help you run/stop a local MySQL and Redis, hope they can help your debugging.
+> [local-deps.sh](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/scripts/local-deps.sh) can help you run/stop a local MySQL and Redis, hope they can help your debugging.
 
 #### Remote debugging
 Sometimes local debugging can't reproduce the problem on the server, or you can't find the provider of the services that the application depends on, so you want to directly debug the pods in the k8s cluster remotely. jiangsier-archetype-demo has considered this aspect, you follow the steps below:
@@ -57,7 +57,7 @@ The cache configuration is in [cache-config.yml](https://github.com/jiangsier-xy
 ### Distributed Session
 jiangsier-archetype-demo implements Spring Session based on Redisson, and sets the Session expiration time to one hour, refer to [RedissonSessionConfig.java](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/jiangsier-archetype-demo-start/src/main/java/xyz/jiangsier/config/RedissonCacheConfig.java). As long as a server in the cluster has a Session set, the entire cluster will know.
 
-Note that the implementation of RedissonConnectionFactory is related to the version of spring-session-data-redis. The second-party package currently used is redisson-spring-data-31 (because spring-session-data-redis uses 3.1.x). For specific correspondence, see [GitHub](https://github.com/redisson/redisson/tree/master/redisson-spring-data#usage).
+Note that the implementation of RedissonConnectionFactory is related to the version of spring-session-data-redis. The second-party package currently used is redisson-spring-data-33 (because spring-session-data-redis uses3.3.x). For specific correspondence, see [GitHub](https://github.com/redisson/redisson/tree/master/redisson-spring-data#usage).
 
 ### Distributed Scheduling
 TODO
@@ -136,15 +136,11 @@ All HTTP API calls are uniformly traced, and the related implementation is in [T
 ## What jiangsier-archetype-demo depends on
 As a cloud-native application, the services that jiangsier-archetype-demo depends on are all pulled from the helm repository and deployed to your cluster without requiring you to purchase separate cloud services.
 
-But, from the perspective of operation and maintenance, you may prefer to purchase cloud services guaranteed by SLA (Service Level Agreement), then you only need to set [Helm Configurations](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/app-meta/helm-config/values.yaml) parameters as
+But, from the perspective of operation and maintenance, you may prefer to purchase cloud services guaranteed by SLA (Service Level Agreement), then you only need to set [Helm Configurations](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/configs/helm/values.yaml) parameters as
 ```yaml
-bitnami:
-   mysql:
-     enabled: false
-   redis:
-     enabled: false
-
 mysql:
+  deployment:
+    enabled: false
    url: <your mysql url>
    auth:
      rootPassword: <your mysql root password>
@@ -152,6 +148,8 @@ mysql:
      password: <your mysql password for the username>
 
 redis:
+  deployment:
+    enabled: false
    url: <your redis url>
    auth:
      password: <your redis password>
@@ -168,7 +166,7 @@ You can also specify other MySQL instances.
 ### Redis
 As mentioned above, jiangsier-archetype-demo uses Redis as the backend to achieve most of its distributed capabilities. Redis is a must-have component of jiangsier-archetype-demo.
 
-jiangsier-archetype-demo deploys [bitnami/redis-cluster](https://artifacthub.io/packages/helm/bitnami/redis-cluster) to the same namespace by default. And the default Reids url is `redis://jiangsier-archetype-demo-redis-cluster:6379`
+jiangsier-archetype-demo deploys [bitnami/redis](https://artifacthub.io/packages/helm/bitnami/redis) to the same namespace by default. And the default Reids url is `redis://jiangsier-archetype-demo-redis-master:6379`
 
 You can also specify other Redis instances.
 

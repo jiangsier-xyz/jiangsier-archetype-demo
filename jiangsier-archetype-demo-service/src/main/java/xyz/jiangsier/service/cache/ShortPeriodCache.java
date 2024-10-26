@@ -8,7 +8,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-@Cacheable(cacheNames = "shortPeriod", keyGenerator="fullNameKeyGenerator")
+@Cacheable(cacheNames = "shortPeriod", keyGenerator = "fullNameKeyGenerator", unless= "#result == null")
 @SuppressWarnings("unused")
 public @interface ShortPeriodCache {
     String keyBy() default "";

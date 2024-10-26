@@ -223,7 +223,7 @@ public class TestController {
                           Model model) {
         StringBuilder resp = new StringBuilder();
         Object sessionValue = session.getAttribute(key);
-        if (Objects.isNull(sessionValue)) {
+        if (sessionValue == null) {
             resp.append("Session doesn't exist, setting ").append(key).append("=").append(value);
             session.setAttribute(key, value);
         } else {
@@ -231,7 +231,7 @@ public class TestController {
         }
 
         Cookie[] cookies = request.getCookies();
-        if (Objects.nonNull(cookies) && cookies.length > 0) {
+        if (cookies != null && cookies.length > 0) {
             resp.append("\n").append("Cookies:\n");
             for (Cookie cookie : cookies) {
                 resp.append(cookie.getName()).append(" : ").append(cookie.getValue()).append("\n");
@@ -250,7 +250,7 @@ public class TestController {
                              Model model) {
         Object sessionValue = session.getAttribute(key);
         TestPojo pojo;
-        if (Objects.isNull(sessionValue) || !(sessionValue instanceof TestPojo)) {
+        if (sessionValue == null || !(sessionValue instanceof TestPojo)) {
             pojo = new TestPojo();
             pojo.a = key;
             pojo.b = value;
@@ -309,10 +309,10 @@ public class TestController {
         Authentication authenticated = SecurityContextHolder.getContext().getAuthentication();
         Map<String, Object> userInfo = new HashMap<>(3);
         try {
-            if (Objects.nonNull(authenticated)) {
+            if (authenticated != null) {
                 userInfo.put("authentication", authenticated);
                 Object extraInfo = request.getAttribute("userExtraInfo");
-                if (Objects.nonNull(extraInfo)) {
+                if (extraInfo != null) {
                     //noinspection rawtypes
                     if (extraInfo instanceof Map extraMap) {
                         userInfo.putAll(extraMap);

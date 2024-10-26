@@ -54,7 +54,7 @@ public class SysUserDetailsManager implements UserDetailsManager {
     private User mapUser(UserDetails userDetails, User user) {
         Date now = new Date(System.currentTimeMillis());
 
-        if (Objects.isNull(user)) {
+        if (user == null) {
             user = new User();
         }
 
@@ -68,7 +68,7 @@ public class SysUserDetailsManager implements UserDetailsManager {
 
     @Override
     public void createUser(UserDetails userDetails) {
-        if (Objects.isNull(userDetails)) {
+        if (userDetails == null) {
             return;
         }
 
@@ -89,7 +89,7 @@ public class SysUserDetailsManager implements UserDetailsManager {
 
     @Override
     public void updateUser(UserDetails userDetails) {
-        if (Objects.isNull(userDetails)) {
+        if (userDetails == null) {
             return;
         }
 
@@ -101,7 +101,7 @@ public class SysUserDetailsManager implements UserDetailsManager {
             }
         } else {
             user = ((SysUserDetails) loadUserByUsername(userDetails.getUsername()));
-            if (Objects.isNull(user)) {
+            if (user == null) {
                 return;
             }
             user = mapUser(userDetails, user);
@@ -123,12 +123,12 @@ public class SysUserDetailsManager implements UserDetailsManager {
                 .map(SysUserDetails.class::cast)
                 .orElse(null);
 
-        if (Objects.isNull(sysUser)) {
+        if (sysUser == null) {
             return;
         }
 
         User user = userService.loadUserByUsernameAndPassword(sysUser.getUsername(), oldPassword);
-        if (Objects.isNull(user)) {
+        if (user == null) {
             return;
         }
 
@@ -144,7 +144,7 @@ public class SysUserDetailsManager implements UserDetailsManager {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userService.loadUserByUsername(username);
-        if (Objects.isNull(user)) {
+        if (user == null) {
             throw new UsernameNotFoundException("No user for " + username);
         }
         return SysUserDetails.builder()
@@ -156,7 +156,7 @@ public class SysUserDetailsManager implements UserDetailsManager {
 
     public SysUserDetails loadUserByUsernameAndPlatform(String username, String platform) {
         User user = userService.loadUserByUsernameAndPlatform(username, platform);
-        if (Objects.isNull(user)) {
+        if (user == null) {
             return null;
         }
         return SysUserDetails.builder()
@@ -192,7 +192,7 @@ public class SysUserDetailsManager implements UserDetailsManager {
         if ("aliyun".equalsIgnoreCase(platform)) {
             String uid = oAuth2User.getAttribute("uid");
             String aid = oAuth2User.getAttribute("aid");
-            if (Objects.isNull(uid) || Objects.isNull(aid)) {
+            if (uid == null || aid == null) {
                 return nickname;
             }
             if (StringUtils.equals(uid, aid)) {
@@ -268,7 +268,7 @@ public class SysUserDetailsManager implements UserDetailsManager {
     }
 
     private Date timestampToDate(Object timestamp) {
-        if (Objects.isNull(timestamp)) {
+        if (timestamp == null) {
             return null;
         }
 
@@ -287,7 +287,7 @@ public class SysUserDetailsManager implements UserDetailsManager {
     }
 
     private Byte toByte(Boolean bool) {
-        return Objects.nonNull(bool) && bool ? (byte)1 : (byte)0;
+        return bool != null && bool ? (byte)1 : (byte)0;
     }
 
     public SysUserDetails createSysUserFromOAuth2UserIfNecessary(OAuth2User oAuth2User,
@@ -301,7 +301,7 @@ public class SysUserDetailsManager implements UserDetailsManager {
         Set<String> authorities = oAuth2User.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toSet());
-        if (Objects.isNull(user)) {
+        if (user == null) {
             String zoneInfo = oAuth2User.getAttribute(StandardClaimNames.ZONEINFO);
 
             user = new User()
@@ -352,7 +352,7 @@ public class SysUserDetailsManager implements UserDetailsManager {
                                                        OAuth2AuthorizedClient oAuth2Client) {
         String platform = oAuth2Client.getClientRegistration().getRegistrationId();
         OAuth2RefreshToken refreshToken = oAuth2Client.getRefreshToken();
-        if (Objects.isNull(refreshToken) && bindService.isBound(sysUser, platform)) {
+        if (refreshToken == null && bindService.isBound(sysUser, platform)) {
             return false;
         }
         String refreshTokenValue = Optional.ofNullable(refreshToken)

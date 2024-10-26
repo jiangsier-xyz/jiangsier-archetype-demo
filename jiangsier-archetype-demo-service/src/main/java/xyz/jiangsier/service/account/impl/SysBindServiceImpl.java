@@ -50,7 +50,7 @@ public class SysBindServiceImpl implements SysBindService {
                 .orElse(null);
 
         int rows;
-        if (Objects.nonNull(oldBinding)) {
+        if (oldBinding != null) {
             binding.setGmtCreate(oldBinding.getGmtCreate());
             binding.setId(oldBinding.getId());
             rows = bindingMapper.updateByPrimaryKeySelective(binding);
@@ -74,7 +74,7 @@ public class SysBindServiceImpl implements SysBindService {
                         .and(BindingDynamicSqlSupport.platform, isEqualTo(platform)))
                 .filter(binding -> {
                     Date expiresAt = binding.getExpiresAt();
-                    return Objects.isNull(expiresAt) || expiresAt.after(new Date(System.currentTimeMillis()));
+                    return expiresAt == null || expiresAt.after(new Date(System.currentTimeMillis()));
                 })
                 .isPresent();
     }

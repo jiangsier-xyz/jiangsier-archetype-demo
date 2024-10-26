@@ -1,29 +1,28 @@
 package xyz.jiangsier.api.admin;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 import xyz.jiangsier.api.dto.UserBasicInfoDTO;
 import xyz.jiangsier.api.dto.UserDetailsDTO;
 import xyz.jiangsier.model.User;
 import xyz.jiangsier.service.account.SysApiTokenService;
 import xyz.jiangsier.service.account.SysAuthorityService;
 import xyz.jiangsier.service.account.SysUserService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
 import java.time.Duration;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
-@Service
+@Controller
 @Tag(name = "account manager (for admin)")
 @RequestMapping("/api/admin")
 @ResponseBody
@@ -66,8 +65,8 @@ public class AccountManager {
     public List<UserBasicInfoDTO> listUsers(
             @Parameter(description = "Maximum size") @PathVariable("pageSize") Integer pageSize,
             @Parameter(description = "Current page") @PathVariable("pageNum") Integer pageNum) {
-        int limit = Objects.nonNull(pageSize) && pageSize > 0 ? pageSize : 0;
-        int offset = Objects.nonNull(pageSize) && Objects.nonNull(pageNum) && pageSize * pageNum > 0
+        int limit = pageSize != null && pageSize > 0 ? pageSize : 0;
+        int offset = pageSize != null && pageNum != null && pageSize * pageNum > 0
                 ? pageSize * pageNum
                 : 0;
         return userService.listUsers(limit, offset)
@@ -134,7 +133,7 @@ public class AccountManager {
             @Parameter(description = "Username") @PathVariable("username") @NotBlank
             String username) {
         User user = userService.loadUserByUsername(username);
-        if (Objects.isNull(user)) {
+        if (user == null) {
             return null;
         }
         return authorityService.listAuthorities(user);
@@ -151,7 +150,7 @@ public class AccountManager {
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Authorities") @RequestBody @NotEmpty
             Set<String> authorities) {
         User user = userService.loadUserByUsername(username);
-        if (Objects.isNull(user)) {
+        if (user == null) {
             return null;
         }
         return authorityService.updateAuthorities(user, authorities);
@@ -166,7 +165,7 @@ public class AccountManager {
             @Parameter(description = "Username") @PathVariable("username") @NotBlank
             String username) {
         User user = userService.loadUserByUsername(username);
-        if (Objects.isNull(user)) {
+        if (user == null) {
             return null;
         }
         return apiTokenService.listTokens(user);
@@ -183,7 +182,7 @@ public class AccountManager {
             @Parameter(description = "Validity of seconds.") @PathVariable("duration") @NotNull @PositiveOrZero
             Long duration) {
         User user = userService.loadUserByUsername(username);
-        if (Objects.isNull(user)) {
+        if (user == null) {
             return null;
         }
         return apiTokenService.createToken(user, Duration.ofSeconds(duration));

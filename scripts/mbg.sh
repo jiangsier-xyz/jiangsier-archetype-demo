@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 source $(dirname ${BASH_SOURCE[0]})/setenv.sh
 
@@ -68,8 +68,6 @@ mvn -f ${MODULE_PATH}/pom.xml \
   mybatis-generator:generate;ret=$?
 
 cleanup ${cid}
-
-find ${MODULE_PATH} -name "*.java" | xargs sed -i '' 's/javax.annotation.Generated/javax.annotation.processing.Generated/g'
 
 rm -rf ${MYSQL_DATA}
 

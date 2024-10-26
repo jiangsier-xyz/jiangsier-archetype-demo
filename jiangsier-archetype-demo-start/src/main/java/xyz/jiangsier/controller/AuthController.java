@@ -67,7 +67,7 @@ public class AuthController {
 
     @RequestMapping("/login/oauth2/success")
     public String oAuth2Success(HttpServletRequest request) {
-        return "redirect:/swagger-ui/index.html";
+        return "redirect:/public/docs/api";
     }
 
     @RequestMapping("/login/oauth2/failure")
@@ -77,7 +77,7 @@ public class AuthController {
 
     @RequestMapping("/login/portal/success")
     public String portalSuccess() {
-        return "redirect:/swagger-ui/index.html";
+        return "redirect:/public/docs/api";
     }
 
     @RequestMapping("/login/portal/failure")
@@ -89,7 +89,7 @@ public class AuthController {
     @ResponseBody
     public String createToken(Authentication authenticated) {
         User user = authenticationToUser(authenticated);
-        if (Objects.isNull(user)) {
+        if (user == null) {
             throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED);
         }
         return apiTokenService.createToken(user);
@@ -100,7 +100,7 @@ public class AuthController {
     public String createToken(Authentication authenticated,
                               @PathVariable("duration") @NotNull @Positive Long duration) {
         User user = authenticationToUser(authenticated);
-        if (Objects.isNull(user)) {
+        if (user == null) {
             throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED);
         }
         return apiTokenService.createToken(user, Duration.ofSeconds(duration));
@@ -128,7 +128,7 @@ public class AuthController {
     @ResponseBody
     public List<String> listTokens(Authentication authenticated) {
         User user = authenticationToUser(authenticated);
-        if (Objects.isNull(user)) {
+        if (user == null) {
             throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED);
         }
         return apiTokenService.listTokens(user);

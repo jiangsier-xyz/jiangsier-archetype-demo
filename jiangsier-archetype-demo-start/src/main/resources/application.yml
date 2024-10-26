@@ -1,6 +1,6 @@
 app:
   logging:
-    home: logs
+    home: ${APP_HOME}/logs
     level: info
 auth:
   login:
@@ -23,7 +23,7 @@ cache:
   redisson:
     config: classpath:/cache-config.yml
 redis:
-  mode: cluster
+  mode: single
   datasource:
     timeout: 10000
 spring:
@@ -40,16 +40,24 @@ spring:
             tokenUri: https://oauth.aliyun.com/v1/token
             userInfoUri: https://oauth.aliyun.com/v1/userinfo
             userNameAttribute: sub
-        registration:
-          aliyun:
-            authorizationGrantType: authorization_code
-            clientAuthenticationMethod: client_secret_basic
-            clientName: Aliyun
-            redirectUri: '{baseUrl}/login/oauth2/code/{registrationId}'
-            scope: openid
 springdoc:
+  apiDocs:
+    path: /public/openapi/v3/api-docs
+  swaggerUi:
+    path: /public/docs/api/swagger-ui
+  defaultProducesMediaType: application/json
   paths: /api/**
   packagesToScan: xyz.jiangsier.api
+  groupConfigs:
+    - group: g-all
+      displayName: All
+      pathsToMatch: /api/**
+    - group: g-admin
+      displayName: Admin
+      pathsToMatch: /api/admin/**
+    - group: g-account
+      displayName: Account
+      pathsToMatch: /api/account/**
 perf:
   trace:
     excludeUri: /public/check/**,/favicon.ico,/error

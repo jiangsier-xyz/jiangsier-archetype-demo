@@ -1,66 +1,50 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <groupId>xyz.jiangsier</groupId>
   <artifactId>jiangsier-archetype-demo</artifactId>
   <packaging>pom</packaging>
   <version>${revision}</version>
   <name>${project.artifactId}</name>
-
-  <modules>
-    <module>jiangsier-archetype-demo-common</module>
-    <module>jiangsier-archetype-demo-dal</module>
-    <module>jiangsier-archetype-demo-service</module>
-    <module>jiangsier-archetype-demo-start</module>
-  </modules>
-
   <properties>
-    <revision>1.0.1-SNAPSHOT</revision>
+    <revision>2.0.0</revision>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
     <!--dependency versions-->
-    <spring-boot.version>3.1.4</spring-boot.version>
-    <springdoc.version>2.2.0</springdoc.version>
-    <mybatis.version>3.5.13</mybatis.version>
-    <mybatis-dynamic-sql.version>1.4.1</mybatis-dynamic-sql.version>
-    <mybatis-spring-boot-starter.version>2.3.0</mybatis-spring-boot-starter.version>
+    <spring-boot.version>3.3.5</spring-boot.version>
+    <springdoc.version>2.6.0</springdoc.version>
+    <mybatis.version>3.5.15</mybatis.version>
+    <mybatis-dynamic-sql.version>1.5.0</mybatis-dynamic-sql.version>
+    <mybatis-spring-boot-starter.version>3.0.3</mybatis-spring-boot-starter.version>
     <commons-collections4.version>4.4</commons-collections4.version>
-    <commons-io.version>2.13.0</commons-io.version>
-    <redisson.version>3.23.5</redisson.version>
-
+    <commons-io.version>2.15.1</commons-io.version>
+    <commons-lang3.version>3.14.0</commons-lang3.version>
+    <redisson.version>3.36.0</redisson.version>
+    <objenesis.version>3.3</objenesis.version>
     <!--plugin versions-->
-    <buildnumber-maven-plugin.version>1.4</buildnumber-maven-plugin.version>
-    <maven-antrun-plugin.version>3.0.0</maven-antrun-plugin.version>
-    <mybatis-generator-maven-plugin.version>1.4.1</mybatis-generator-maven-plugin.version>
+    <buildnumber-maven-plugin.version>3.2.0</buildnumber-maven-plugin.version>
+    <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
+    <mybatis-generator-maven-plugin.version>1.4.2</mybatis-generator-maven-plugin.version>
   </properties>
-
   <dependencyManagement>
     <dependencies>
       <!--modules-->
       <dependency>
         <groupId>xyz.jiangsier</groupId>
         <artifactId>jiangsier-archetype-demo-common</artifactId>
-        <version>${project.version}</version>
+        <version>${revision}</version>
       </dependency>
-
       <dependency>
         <groupId>xyz.jiangsier</groupId>
         <artifactId>jiangsier-archetype-demo-dal</artifactId>
-        <version>${project.version}</version>
+        <version>${revision}</version>
       </dependency>
-
       <dependency>
         <groupId>xyz.jiangsier</groupId>
         <artifactId>jiangsier-archetype-demo-service</artifactId>
-        <version>${project.version}</version>
+        <version>${revision}</version>
       </dependency>
-
       <!--spring-->
       <dependency>
         <groupId>org.springframework.boot</groupId>
@@ -69,91 +53,91 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-
       <dependency>
         <groupId>org.springdoc</groupId>
         <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
         <version>${springdoc.version}</version>
       </dependency>
-
       <!--mybatis-->
       <dependency>
         <groupId>org.mybatis.spring.boot</groupId>
         <artifactId>mybatis-spring-boot-starter</artifactId>
         <version>${mybatis-spring-boot-starter.version}</version>
       </dependency>
-
       <dependency>
         <groupId>org.mybatis</groupId>
         <artifactId>mybatis</artifactId>
         <version>${mybatis.version}</version>
       </dependency>
-
       <dependency>
         <groupId>org.mybatis.dynamic-sql</groupId>
         <artifactId>mybatis-dynamic-sql</artifactId>
         <version>${mybatis-dynamic-sql.version}</version>
       </dependency>
-
       <!--redisson-->
       <dependency>
         <groupId>org.redisson</groupId>
         <artifactId>redisson</artifactId>
         <version>${redisson.version}</version>
       </dependency>
-
       <dependency>
         <groupId>org.redisson</groupId>
-        <!-- for Spring Data Redis v3.1.x -->
-        <artifactId>redisson-spring-data-31</artifactId>
+        <!-- for Spring Data Redis v3.3.x -->
+        <artifactId>redisson-spring-data-33</artifactId>
         <version>${redisson.version}</version>
       </dependency>
-
       <!--commons-->
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-collections4</artifactId>
         <version>${commons-collections4.version}</version>
       </dependency>
-
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
         <version>${commons-io.version}</version>
       </dependency>
+      <!--misc-->
+      <dependency>
+        <groupId>org.objenesis</groupId>
+        <artifactId>objenesis</artifactId>
+        <version>${objenesis.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jcl-over-slf4j</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jul-to-slf4j</artifactId>
     </dependency>
-
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
     </dependency>
-
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
     </dependency>
   </dependencies>
-
   <build>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <compilerArgs>
+              <arg>-parameters</arg>
+            </compilerArgs>
+          </configuration>
+        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-antrun-plugin</artifactId>
@@ -177,6 +161,10 @@
       </plugins>
     </pluginManagement>
   </build>
-
+  <modules>
+    <module>jiangsier-archetype-demo-common</module>
+    <module>jiangsier-archetype-demo-dal</module>
+    <module>jiangsier-archetype-demo-service</module>
+    <module>jiangsier-archetype-demo-start</module>
+  </modules>
 </project>
-
