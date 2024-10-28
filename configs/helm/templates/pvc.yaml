@@ -1,4 +1,4 @@
-{{- if .Values.deployment.pvc.enabled -}}
+{{- if .Values.persistence.enabled -}}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -6,10 +6,10 @@ metadata:
   labels:
     {{- include "helpers.labels" . | nindent 4 }}
 spec:
-  accessModes: {{ default "[ReadWriteOnce]" .Values.deployment.pvc.accessModes }}
+  accessModes: {{ default "[ReadWriteOnce]" .Values.persistence.accessModes }}
   resources:
     requests:
-      storage: {{ default "8Gi" .Values.deployment.pvc.storage }}
+      storage: {{ default "8Gi" .Values.persistence.storage }}
   {{- include "helpers.storageClass" . | nindent 2 }}
   volumeMode: Filesystem
 {{- end }}
