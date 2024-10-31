@@ -26,7 +26,7 @@ mgb.sh 首先在你的机器上使用 `docker run` 运行一个 MySQL 实例，�
 
 #### 远程调试
 有时候本地调试并不能重现服务器上的问题，或者你找不到应用程序依赖的服务的提供方，因此你期望对 k8s 集群里的 pods 直接进行远程调试。jiangsier-archetype-demo 做了这方面的考虑，你按照以下步骤来进行：
-1. 将 helm values 中的 debug.jpda.enabled 设置为 true
+1. 将 helm values 中的  backend.debug.jpda.enabled 设置为 true
 ```yaml
 debug:
   jpda:

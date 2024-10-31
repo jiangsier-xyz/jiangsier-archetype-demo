@@ -26,7 +26,7 @@ If you want to debug locally, you generally don't run helm rendering, and the co
 
 #### Remote debugging
 Sometimes local debugging can't reproduce the problem on the server, or you can't find the provider of the services that the application depends on, so you want to directly debug the pods in the k8s cluster remotely. jiangsier-archetype-demo has considered this aspect, you follow the steps below:
-1. Set helm value "debug.jpda.enabled" to true
+1. Set helm value " backend.debug.jpda.enabled" to true
 ```yaml
 debug:
    jpda:
