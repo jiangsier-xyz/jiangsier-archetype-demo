@@ -139,20 +139,18 @@ As a cloud-native application, the services that jiangsier-archetype-demo depend
 But, from the perspective of operation and maintenance, you may prefer to purchase cloud services guaranteed by SLA (Service Level Agreement), then you only need to set [Helm Configurations](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/configs/helm/values.yaml) parameters as
 ```yaml
 mysql:
-  deployment:
-    enabled: false
-   url: <your mysql url>
-   auth:
-     rootPassword: <your mysql root password>
-     username: <your mysql username>
-     password: <your mysql password for the username>
+  enabled: false
+  url: <your mysql url>
+  auth:
+    rootPassword: <your mysql root password>
+    username: <your mysql username>
+    password: <your mysql password for the username>
 
 redis:
-  deployment:
-    enabled: false
-   url: <your redis url>
-   auth:
-     password: <your redis password>
+  enabled: false
+  url: <your redis url>
+  auth:
+    password: <your redis password>
 ```
 Then jiangsier-archetype-demo will not automatically install MySQL and Redis, and directly use the configuration information to connect. This information will be automatically injected into the Spring configuration file when installing, and then retrieved by the application.
 
