@@ -241,3 +241,8 @@ docs/_build/
 
 # Ipython Notebook
 .ipynb_checkpoints
+
+# Special
+jiangsier-archetype-demo-start/src/main/resources/static/logo/jiangsier.png
+jiangsier-archetype-demo-start/src/main/resources/static/logo/qr.jpg
+jiangsier-archetype-demo-start/src/main/resources/templates/login.html
