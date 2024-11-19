@@ -3,7 +3,6 @@ package xyz.jiangsier.util;
 import org.apache.commons.collections4.MapUtils;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.*;
 
 @SuppressWarnings("unused")
@@ -28,7 +27,7 @@ public class TraceThreadPoolExecutor extends ThreadPoolExecutor {
         super.execute(() -> {
             TraceUtils.startTrace(traceId);
             if (MapUtils.isNotEmpty(traceAttributes)) {
-                traceAttributes.forEach(TraceUtils::putTraceAttribute);
+                TraceUtils.setTraceAttributes(traceAttributes);
             }
             try {
                 runnable.run();

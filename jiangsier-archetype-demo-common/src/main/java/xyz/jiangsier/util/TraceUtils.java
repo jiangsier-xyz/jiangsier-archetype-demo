@@ -66,6 +66,10 @@ public class TraceUtils {
         return MDC.getCopyOfContextMap();
     }
 
+    public static void setTraceAttributes(Map<String, String> attributes) {
+        MDC.setContextMap(attributes);
+    }
+
     public enum TraceStatus {
         SUCCESSFUL("S"),
         FAILED("F"),
