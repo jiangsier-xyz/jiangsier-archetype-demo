@@ -5,19 +5,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
-import xyz.jiangsier.service.account.SysApiTokenService;
-import xyz.jiangsier.service.cache.LongPeriodCacheEvict;
 import xyz.jiangsier.mapper.ApiTokenDynamicSqlSupport;
 import xyz.jiangsier.mapper.ApiTokenMapper;
-import xyz.jiangsier.service.account.ApiTokenType;
 import xyz.jiangsier.model.ApiToken;
 import xyz.jiangsier.model.User;
+import xyz.jiangsier.service.account.ApiTokenType;
+import xyz.jiangsier.service.account.SysApiTokenService;
+import xyz.jiangsier.service.cache.LongPeriodCacheEvict;
+import xyz.jiangsier.util.IdUtils;
 
 import java.time.temporal.TemporalAmount;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
@@ -43,7 +42,7 @@ public class SysApiTokenServiceImpl implements SysApiTokenService {
         }
         Date now = new Date(System.currentTimeMillis());
         String token = prefix == null ? "" : prefix;
-        token += UUID.randomUUID().toString().replaceAll("-", "");
+        token += IdUtils.newId();
         int rows = apiTokenMapper.insertSelective(new ApiToken()
                 .withGmtCreate(now)
                 .withGmtModified(now)

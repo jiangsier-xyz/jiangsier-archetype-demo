@@ -1,18 +1,17 @@
 package xyz.jiangsier.service.account.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import xyz.jiangsier.mapper.UserDynamicSqlSupport;
 import xyz.jiangsier.mapper.UserMapper;
 import xyz.jiangsier.model.User;
 import xyz.jiangsier.service.account.SysUserService;
 import xyz.jiangsier.service.cache.MiddlePeriodCache;
 import xyz.jiangsier.service.cache.MiddlePeriodCacheEvict;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import xyz.jiangsier.util.IdUtils;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
@@ -31,7 +30,7 @@ public class SysUserServiceImpl implements SysUserService {
         int rows = userMapper.insertSelective(user
                 .withGmtCreate(now)
                 .withGmtModified(now)
-                .withUserId(UUID.randomUUID().toString().replaceAll("-", "")));
+                .withUserId(IdUtils.newId()));
 
         if (rows == 0) {
             user.withUserId(null)
