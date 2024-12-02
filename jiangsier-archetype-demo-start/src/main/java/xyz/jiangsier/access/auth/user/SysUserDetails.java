@@ -5,14 +5,16 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import xyz.jiangsier.service.account.SysAuthorityService;
 import xyz.jiangsier.model.User;
+import xyz.jiangsier.service.account.SysAuthorityService;
 
 import java.sql.Date;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
+
+import static xyz.jiangsier.util.ByteUtils.isNotFalse;
+import static xyz.jiangsier.util.ByteUtils.isNotTrue;
 
 public class SysUserDetails extends User implements UserDetails {
     private List<? extends GrantedAuthority> authorities;
@@ -33,8 +35,7 @@ public class SysUserDetails extends User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        Byte locked = getLocked();
-        return locked == null || locked == (byte) 0;
+        return isNotTrue(getLocked());
     }
 
     @Override
@@ -46,8 +47,7 @@ public class SysUserDetails extends User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        Byte enabled = getEnabled();
-        return enabled == null || enabled == (byte) 1;
+        return isNotFalse(getEnabled());
     }
 
     public static Builder builder() {
