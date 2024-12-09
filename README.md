@@ -57,7 +57,7 @@ The cache configuration is in [cache-config.yml](https://github.com/jiangsier-xy
 ### Distributed Session
 jiangsier-archetype-demo implements Spring Session based on Redisson, and sets the Session expiration time to one hour, refer to [RedissonSessionConfig.java](https://github.com/jiangsier-xyz/jiangsier-archetype-demo/blob/main/jiangsier-archetype-demo-start/src/main/java/xyz/jiangsier/config/RedissonCacheConfig.java). As long as a server in the cluster has a Session set, the entire cluster will know.
 
-Note that the implementation of RedissonConnectionFactory is related to the version of spring-session-data-redis. The second-party package currently used is redisson-spring-data-33 (because spring-session-data-redis uses3.3.x). For specific correspondence, see [GitHub](https://github.com/redisson/redisson/tree/master/redisson-spring-data#usage).
+Note that the implementation of RedissonConnectionFactory is related to the version of spring-session-data-redis. For specific correspondence, see [GitHub](https://github.com/redisson/redisson/tree/master/redisson-spring-data#usage).
 
 ### Distributed Scheduling
 TODO
