@@ -24,7 +24,7 @@
     <redisson.version>3.39.0</redisson.version>
     <objenesis.version>3.3</objenesis.version>
     <!--plugin versions-->
-    <buildnumber-maven-plugin.version>3.2.0</buildnumber-maven-plugin.version>
+    <buildnumber-maven-plugin.version>3.2.1</buildnumber-maven-plugin.version>
     <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
     <mybatis-generator-maven-plugin.version>1.4.2</mybatis-generator-maven-plugin.version>
   </properties>
