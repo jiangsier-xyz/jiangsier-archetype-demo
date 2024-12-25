@@ -11,6 +11,7 @@ import xyz.jiangsier.service.account.SysAuthorityService;
 import java.sql.Date;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static xyz.jiangsier.util.ByteUtils.isNotFalse;
@@ -48,6 +49,19 @@ public class SysUserDetails extends User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return isNotFalse(getEnabled());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SysUserDetails that)) return false;
+        if (!super.equals(o)) return false;
+        return Objects.equals(getAuthorities(), that.getAuthorities());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getAuthorities());
     }
 
     public static Builder builder() {
